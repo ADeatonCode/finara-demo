@@ -16,6 +16,10 @@ const {
   roundImportAmt,
   resolveImportCategory,
 } = require('./txnImport');
+const {
+  remainingTxnSlots,
+  demoCapNotice,
+} = require('./txnCap');
 
 const PLAID_ACCOUNT_FIELDS = `
   account_id, item_id, plaid_account_id, plaid_institution_name,
@@ -398,7 +402,35 @@ async function syncAccount(accountId) {
     };
   }
 
-  const take = Math.min(unused.length, 3 + Math.floor(Math.random() * 6));
+  const remaining = remainingTxnSlots(accountId);
+  const desired = Math.min(unused.length, 3 + Math.floor(Math.random() * 6));
+  const take = Math.min(desired, remaining);
+  const hitCap = remaining <= 0 || desired > remaining;
+
+  function markSynced() {
+    const now = new Date().toISOString();
+    db.prepare(`
+      UPDATE plaid_items SET last_synced_at = ?, last_error = NULL WHERE account_id = ?
+    `).run(now, accountId);
+    db.prepare('UPDATE accounts SET synced = ? WHERE id = ?').run(formatSyncedLabel(), accountId);
+    return now;
+  }
+
+  if (take <= 0) {
+    markSynced();
+    const status = getPlaidPublicStatus(accountId);
+    return {
+      added: 0,
+      modified: 0,
+      removed: 0,
+      skipped: unused.length,
+      ready: true,
+      last_synced_at: status.plaid_last_synced_at,
+      needs_reauth: false,
+      ...demoCapNotice(accountId),
+    };
+  }
+
   const batch = unused.slice(0, take);
   const insert = db.prepare(`
     INSERT INTO transactions
@@ -438,14 +470,10 @@ async function syncAccount(accountId) {
     syncAccountOpeningBalance(accountId);
   }
 
-  const now = new Date().toISOString();
-  db.prepare(`
-    UPDATE plaid_items SET last_synced_at = ?, last_error = NULL WHERE account_id = ?
-  `).run(now, accountId);
-  db.prepare('UPDATE accounts SET synced = ? WHERE id = ?').run(formatSyncedLabel(), accountId);
+  markSynced();
 
   const status = getPlaidPublicStatus(accountId);
-  return {
+  const result = {
     added: inserted,
     modified: 0,
     removed: 0,
@@ -454,6 +482,10 @@ async function syncAccount(accountId) {
     last_synced_at: status.plaid_last_synced_at,
     needs_reauth: false,
   };
+  if (hitCap) {
+    Object.assign(result, demoCapNotice(accountId));
+  }
+  return result;
 }
 
 async function disconnectAccount(accountId) {

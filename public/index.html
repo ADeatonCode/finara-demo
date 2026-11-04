@@ -114,6 +114,16 @@
     padding: 8px 20px;
     line-height: 1.45;
   }
+  .demo-notify-banner {
+    background: #eff6ff;
+    border-bottom: 1px solid #bfdbfe;
+    color: #1e3a8a;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 8px 20px;
+    line-height: 1.45;
+  }
+  .demo-notify-banner a { color: #1d4ed8; }
   .auth-notice {
     background: #fffbeb;
     border: 1px solid #fde68a;
@@ -139,8 +149,34 @@
     font-family: inherit;
   }
   .auth-switch-btn:hover { text-decoration: underline; }
-  #auth-display-wrap { display: none !important; }
-  #auth-display-wrap.is-visible { display: flex !important; }
+  #auth-display-wrap,
+  #auth-email-wrap,
+  #auth-notify-wrap { display: none !important; }
+  #auth-display-wrap.is-visible,
+  #auth-email-wrap.is-visible,
+  #auth-notify-wrap.is-visible { display: flex !important; }
+  .auth-privacy {
+    display: block;
+    margin-top: 6px;
+    font-weight: 500;
+  }
+  .auth-notify-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    text-transform: none;
+    letter-spacing: 0;
+    cursor: pointer;
+    line-height: 1.4;
+  }
+  .auth-notify-check input {
+    margin-top: 2px;
+    flex-shrink: 0;
+    accent-color: var(--accent);
+  }
   .demo-bank-list {
     display: flex;
     flex-direction: column;
@@ -478,7 +514,7 @@
     overflow: hidden;
   }
 
-  #panel-transactions .txn-account-tabs,
+  #panel-transactions .txn-account-toolbar,
   #panel-transactions .txn-controls {
     flex-shrink: 0;
   }
@@ -496,15 +532,37 @@
     background: #fafafa;
   }
 
-  .txn-account-tabs {
+  .txn-account-toolbar {
     display: flex;
-    gap: 2px;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
     margin: -24px -28px 16px;
     padding: 10px 28px 0;
     border-bottom: 1px solid var(--border);
     background: var(--bg-main);
-    overflow-x: auto;
   }
+  .txn-account-tabs {
+    display: flex;
+    gap: 2px;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+    overflow-x: auto;
+    flex: 1;
+    min-width: 0;
+  }
+  .txn-cap-meter {
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    padding: 0 0 10px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+  }
+  .txn-cap-meter.is-full { color: #b45309; }
   .txn-account-tab {
     padding: 9px 14px;
     font-size: 12px;
@@ -755,6 +813,10 @@
   .type-badge.invest { background: #f0fdf4; color: #15803d; border-color: #bbf7d0; }
   .type-badge.realestate { background: #eff6ff; color: #1d4ed8; border-color: #bfdbfe; }
   .type-badge.transportation { background: #fff7ed; color: #c2410c; border-color: #fed7aa; }
+  .type-badge.cash { background: #f8fafc; color: #475569; border-color: #e2e8f0; }
+  .asset-child-row td:first-child { padding-left: 28px; }
+  .asset-child-label { font-weight: 500; color: var(--text-secondary); }
+  .asset-parent-meta { font-size: 11px; color: var(--text-muted); margin-top: 1px; }
   .user-you-badge {
     display: inline-block;
     margin-left: 6px;
@@ -834,6 +896,160 @@
   .budget-actual-readonly {
     color: var(--text-secondary);
     font-variant-numeric: tabular-nums;
+  }
+  #panel-budget .page-header {
+    align-items: flex-start;
+    gap: 12px;
+  }
+  #panel-budget .header-controls { flex-wrap: wrap; }
+  .budget-period-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 10px;
+    justify-content: flex-end;
+  }
+  .budget-period-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 6px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: #fff;
+    min-width: 280px;
+  }
+  .budget-period-slot-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .budget-period-slot-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+  .budget-period-when {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: #f3f4f6;
+    color: var(--text-secondary);
+  }
+  .budget-period-when-current { background: #eff6ff; color: #1d4ed8; }
+  .budget-period-when-future { background: #fff7ed; color: #c2410c; }
+  .budget-period-when-past { background: #f3f4f6; color: var(--text-secondary); }
+  .budget-period-slot .ctrl-select { min-width: 118px; }
+  .budget-period-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .budget-period-identity {
+    flex: 1;
+    text-align: center;
+    min-width: 0;
+  }
+  .budget-period-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-primary);
+    letter-spacing: -0.2px;
+    line-height: 1.2;
+  }
+  .budget-period-slot .date-range-display {
+    min-width: 0;
+    border: none;
+    background: transparent;
+    padding: 2px 0 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: block;
+    text-align: center;
+  }
+  .budget-period-slot-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .budget-period-shift {
+    padding: 6px 10px;
+    min-width: 0;
+    height: auto;
+    min-height: 32px;
+    justify-content: center;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  thead th.budget-period-group {
+    text-align: center;
+    color: var(--text-primary);
+    background: #eef2f7;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 12px;
+    font-weight: 700;
+    border-bottom: 1px solid var(--border);
+  }
+  thead th.budget-period-group-alt { background: #f3f4f6; }
+  thead th.budget-period-group-current { background: #eff6ff; }
+  thead th.budget-period-group-future { background: #fff7ed; }
+  #panel-budget .section-card { overflow-x: auto; }
+  #panel-budget .budget-history-card { overflow: visible; }
+  #panel-budget [hidden] { display: none !important; }
+  .budget-history-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .budget-history-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+  .budget-history-from { min-width: 140px; }
+  .budget-history-legend {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 10px 16px 0;
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .budget-history-swatch {
+    display: inline-block;
+    width: 14px;
+    height: 3px;
+    border-radius: 2px;
+    vertical-align: middle;
+    margin-right: 4px;
+  }
+  .budget-history-swatch-budget { background: var(--accent); }
+  .budget-history-swatch-actual { background: #7c3aed; }
+  .budget-history-note {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .budget-history-chart-wrap {
+    padding: 8px 12px 14px;
+  }
+  .budget-history-chart-wrap svg {
+    width: 100%;
+    height: auto;
+    display: block;
   }
 
   .credit-score-card {
@@ -1475,6 +1691,22 @@
     font-size: 13px;
     line-height: 1.45;
   }
+  .demo-purchase-copy {
+    font-size: 13px;
+    color: var(--text-primary);
+    line-height: 1.55;
+    margin: 0 0 12px;
+  }
+  .demo-purchase-copy a {
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .demo-purchase-extra {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    margin: 0 0 12px;
+  }
   .plaid-help {
     font-size: 13px;
     color: var(--text-secondary);
@@ -1609,7 +1841,7 @@
       </div>
       Finara Demo
     </div>
-    <p class="auth-notice">This is a demo of the real product only. Data is kept for 7 days.</p>
+    <p class="auth-notice">This is a demo of the real product only. Data is kept for 7 days. <span class="auth-privacy">We do not keep your email on this demo server. If you opt in, a one-time notice goes to Alan.</span></p>
     <h1 class="auth-title" id="auth-title">Sign in</h1>
     <p class="auth-subtitle" id="auth-subtitle">Sign in to your demo household. Each visitor keeps their own data.</p>
     <form id="auth-form" onsubmit="submitAuth(event)">
@@ -1624,6 +1856,16 @@
       <div class="form-group">
         <label class="form-label" for="auth-password">Password</label>
         <input class="form-input" id="auth-password" type="password" placeholder="At least 8 characters" autocomplete="current-password" required>
+      </div>
+      <div class="form-group" id="auth-email-wrap" hidden>
+        <label class="form-label" for="auth-email">Email</label>
+        <input class="form-input" id="auth-email" type="text" inputmode="email" placeholder="Optional" autocomplete="email">
+      </div>
+      <div class="form-group" id="auth-notify-wrap" hidden>
+        <label class="auth-notify-check" for="auth-notify">
+          <input type="checkbox" id="auth-notify">
+          Email me when the full app is available.
+        </label>
       </div>
       <button class="btn-primary auth-submit" type="submit" id="auth-submit-btn">Sign in</button>
       <p class="auth-error" id="auth-error" hidden></p>
@@ -1732,6 +1974,9 @@
 ═══════════════════════════════════════════════════════════ -->
 <main class="main">
   <div class="demo-app-banner">This is a demo of the real product only. Data is kept for 7 days.</div>
+  <div class="demo-notify-banner" id="demo-notify-banner" hidden>
+    Your demo account is ready. We could not send the launch notice — email Alan at <a href="mailto:acdelgato@gmail.com">acdelgato@gmail.com</a> if you still want to hear when the full app is available.
+  </div>
 
   <!-- ─────────────────────────────────────────────────────
        TAB 1: BALANCE SHEET
@@ -2026,20 +2271,65 @@
   <div class="panel" id="panel-budget">
     <div class="page-header">
       <div class="page-title">Budget Sheet</div>
-      <div class="header-controls">
-        <select class="ctrl-select" id="budget-view-timeframe" onchange="setAppPeriodFromBudgetSelect(this.value)" aria-label="Budget transaction period">
-          <option value="Weekly">Weekly</option>
-          <option value="Bi-weekly">Bi-weekly</option>
-          <option value="Twice a month">Twice a month (1st &amp; 15th)</option>
-          <option value="Monthly">Monthly</option>
-          <option value="Yearly">Yearly</option>
-          <option value="All transactions" selected>All transactions</option>
-        </select>
-        <button class="ctrl-btn" id="budget-change-period-btn" type="button" onclick="openAppPeriodModal()" hidden>
-          <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="2" width="10" height="9" rx="1.5"/><line x1="4" y1="1" x2="4" y2="3"/><line x1="8" y1="1" x2="8" y2="3"/></svg>
-          Change Period
-        </button>
-        <span class="date-range-display" id="budget-period-range"></span>
+      <div class="header-controls budget-period-controls">
+        <div class="budget-period-slot">
+          <div class="budget-period-slot-top">
+            <span class="budget-period-slot-label">Period 1</span>
+            <span class="budget-period-when" id="budget-period-0-when">Current</span>
+          </div>
+          <select class="ctrl-select" id="budget-period-0-type" onchange="setBudgetCompareType(0, this.value)" aria-label="Budget period 1 type">
+            <option value="Weekly">Weekly</option>
+            <option value="Bi-weekly">Bi-weekly</option>
+            <option value="Twice a month">Twice a month (1st &amp; 15th)</option>
+            <option value="Monthly" selected>Monthly</option>
+            <option value="Yearly">Yearly</option>
+            <option value="All transactions">All transactions</option>
+          </select>
+          <div class="budget-period-nav">
+            <button class="ctrl-btn budget-period-shift" type="button" id="budget-period-0-prev" onclick="shiftBudgetComparePeriod(0, -1)" title="Previous period" aria-label="Previous period 1">← Back</button>
+            <div class="budget-period-identity">
+              <div class="budget-period-title" id="budget-period-0-title">This month</div>
+              <span class="date-range-display" id="budget-period-0-range"></span>
+            </div>
+            <button class="ctrl-btn budget-period-shift" type="button" id="budget-period-0-next" onclick="shiftBudgetComparePeriod(0, 1)" title="Next period" aria-label="Next period 1">Forward →</button>
+          </div>
+          <div class="budget-period-slot-actions">
+            <button class="ctrl-btn" id="budget-period-0-current" type="button" onclick="jumpBudgetCompareToCurrent(0)" hidden>This month</button>
+            <button class="ctrl-btn" id="budget-period-0-custom-btn" type="button" onclick="openBudgetPeriodModal(0)">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="2" width="10" height="9" rx="1.5"/><line x1="4" y1="1" x2="4" y2="3"/><line x1="8" y1="1" x2="8" y2="3"/></svg>
+              Change dates
+            </button>
+          </div>
+        </div>
+        <div class="budget-period-slot">
+          <div class="budget-period-slot-top">
+            <span class="budget-period-slot-label">Period 2</span>
+            <span class="budget-period-when" id="budget-period-1-when">Past</span>
+          </div>
+          <select class="ctrl-select" id="budget-period-1-type" onchange="setBudgetCompareType(1, this.value)" aria-label="Budget period 2 type">
+            <option value="Weekly">Weekly</option>
+            <option value="Bi-weekly">Bi-weekly</option>
+            <option value="Twice a month">Twice a month (1st &amp; 15th)</option>
+            <option value="Monthly" selected>Monthly</option>
+            <option value="Yearly">Yearly</option>
+            <option value="All transactions">All transactions</option>
+          </select>
+          <div class="budget-period-nav">
+            <button class="ctrl-btn budget-period-shift" type="button" id="budget-period-1-prev" onclick="shiftBudgetComparePeriod(1, -1)" title="Previous period" aria-label="Previous period 2">← Back</button>
+            <div class="budget-period-identity">
+              <div class="budget-period-title" id="budget-period-1-title">Last month</div>
+              <span class="date-range-display" id="budget-period-1-range"></span>
+            </div>
+            <button class="ctrl-btn budget-period-shift" type="button" id="budget-period-1-next" onclick="shiftBudgetComparePeriod(1, 1)" title="Next period" aria-label="Next period 2">Forward →</button>
+          </div>
+          <div class="budget-period-slot-actions">
+            <button class="ctrl-btn" id="budget-period-1-current" type="button" onclick="jumpBudgetCompareToCurrent(1)" hidden>This month</button>
+            <button class="ctrl-btn" id="budget-period-1-custom-btn" type="button" onclick="openBudgetPeriodModal(1)">
+              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="2" width="10" height="9" rx="1.5"/><line x1="4" y1="1" x2="4" y2="3"/><line x1="8" y1="1" x2="8" y2="3"/></svg>
+              Change dates
+            </button>
+          </div>
+        </div>
       </div>
     </div>
     <div class="page-body">
@@ -2061,23 +2351,51 @@
         </div>
       </div>
 
+      <div class="section-card budget-history-card">
+        <div class="section-header">
+          <span class="section-title">Budget vs Actual</span>
+          <div class="budget-history-controls">
+            <label class="budget-history-label" for="budget-history-preset">History</label>
+            <select class="ctrl-select" id="budget-history-preset" onchange="setBudgetHistoryRange(this.value)" aria-label="Budget history range">
+              <option value="3">Last 3 months</option>
+              <option value="6" selected>Last 6 months</option>
+              <option value="12">Last 12 months</option>
+              <option value="from">From date</option>
+            </select>
+            <input class="ctrl-select budget-history-from" type="date" id="budget-history-from" onchange="setBudgetHistoryFrom(this.value)" hidden aria-label="History start date">
+          </div>
+        </div>
+        <div class="budget-history-legend">
+          <span><span class="budget-history-swatch budget-history-swatch-budget"></span>Budget</span>
+          <span><span class="budget-history-swatch budget-history-swatch-actual"></span>Actual</span>
+          <span class="budget-history-note">Income + expenses · through this month</span>
+        </div>
+        <div class="budget-history-chart-wrap">
+          <svg id="budget-history-chart" viewBox="0 0 720 220" xmlns="http://www.w3.org/2000/svg"></svg>
+        </div>
+      </div>
+
       <div class="section-card">
         <div class="section-header">
           <span class="section-title">Income</span>
           <span id="budget-income-meta" style="font-size:11px;color:var(--text-muted);"></span>
         </div>
         <table>
-          <thead>
+          <thead id="budget-income-thead">
             <tr>
-              <th style="width:22%">Category</th>
-              <th style="width:88px">Type</th>
-              <th>Timeframe</th>
-              <th class="num">Budgeted</th>
-              <th class="num">Actual Received</th>
+              <th rowspan="2" style="width:22%">Category</th>
+              <th rowspan="2">Cadence</th>
+              <th class="num budget-period-group" colspan="3">This month</th>
+              <th class="num budget-period-group budget-period-group-alt" colspan="3">Last month</th>
+              <th rowspan="2"></th>
+            </tr>
+            <tr>
+              <th class="num">Budget</th>
+              <th class="num">Actual</th>
               <th class="num">Remaining</th>
-              <th class="num">% of Goal</th>
-              <th style="width:130px">Progress</th>
-              <th></th>
+              <th class="num">Budget</th>
+              <th class="num">Actual</th>
+              <th class="num">Remaining</th>
             </tr>
           </thead>
           <tbody id="budget-income-rows"></tbody>
@@ -2091,17 +2409,21 @@
           <span id="budget-expense-meta" style="font-size:11px;color:var(--text-muted);"></span>
         </div>
         <table>
-          <thead>
+          <thead id="budget-expense-thead">
             <tr>
-              <th style="width:22%">Category</th>
-              <th style="width:88px">Type</th>
-              <th>Timeframe</th>
-              <th class="num">Budgeted</th>
-              <th class="num">Actual Spent</th>
+              <th rowspan="2" style="width:22%">Category</th>
+              <th rowspan="2">Cadence</th>
+              <th class="num budget-period-group" colspan="3">This month</th>
+              <th class="num budget-period-group budget-period-group-alt" colspan="3">Last month</th>
+              <th rowspan="2"></th>
+            </tr>
+            <tr>
+              <th class="num">Budget</th>
+              <th class="num">Actual</th>
               <th class="num">Remaining</th>
-              <th class="num">% Used</th>
-              <th style="width:130px">Progress</th>
-              <th></th>
+              <th class="num">Budget</th>
+              <th class="num">Actual</th>
+              <th class="num">Remaining</th>
             </tr>
           </thead>
           <tbody id="budget-expense-rows"></tbody>
@@ -2121,7 +2443,10 @@
       <div class="page-title">Transactions</div>
     </div>
     <div class="page-body">
-      <div class="txn-account-tabs" id="txn-account-tabs"></div>
+      <div class="txn-account-toolbar">
+        <div class="txn-account-tabs" id="txn-account-tabs"></div>
+        <span class="txn-cap-meter" id="txn-cap-meter" hidden></span>
+      </div>
       <div class="txn-controls">
         <div class="search-wrap">
           <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.5" xmlns="http://www.w3.org/2000/svg"><circle cx="5.5" cy="5.5" r="4"/><line x1="9" y1="9" x2="13" y2="13" stroke-linecap="round"/></svg>
@@ -2152,7 +2477,7 @@
             Change Period
           </button>
           <input type="file" id="txn-csv-import-input" accept=".csv,text/csv" hidden onchange="handleTxnCsvImport(this)">
-          <button class="ctrl-btn" type="button" id="txn-import-csv-btn" onclick="document.getElementById('txn-csv-import-input').click()">Import CSV</button>
+          <button class="ctrl-btn" type="button" id="txn-import-csv-btn" onclick="startTxnCsvImport()">Import CSV</button>
           <a class="ctrl-btn" href="/sample-import.csv" download="sample-import.csv">Sample CSV</a>
           <button class="ctrl-btn">Export CSV</button>
         </div>
@@ -2481,6 +2806,64 @@
         </div>
         <div class="form-group"></div>
       </div>
+      <div id="acct-holding-fields" style="display:none">
+        <div class="form-section-label">Security</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Ticker / Symbol</label>
+            <input class="form-input" id="acct-ticker" placeholder="AAPL" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Shares</label>
+            <input class="form-input" id="acct-shares" type="number" step="any" min="0" placeholder="0">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Held in brokerage</label>
+            <select class="form-select" id="acct-brokerage-account"></select>
+          </div>
+          <div class="form-group"></div>
+        </div>
+      </div>
+      <div id="acct-property-fields" style="display:none">
+        <div class="form-section-label">Property Details</div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Property Type</label>
+            <select class="form-select" id="acct-property-type">
+              <option value="">Select type</option>
+              <option value="Primary residence">Primary residence</option>
+              <option value="Vacation/second home">Vacation/second home</option>
+              <option value="Rental/investment">Rental/investment</option>
+              <option value="Land">Land</option>
+              <option value="Commercial">Commercial</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="form-group"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Street Address</label>
+            <input class="form-input" id="acct-address-street" placeholder="123 Main St" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label class="form-label">City</label>
+            <input class="form-input" id="acct-address-city" placeholder="City" autocomplete="off">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">State</label>
+            <input class="form-input" id="acct-address-state" placeholder="TX" maxlength="2" autocomplete="off">
+          </div>
+          <div class="form-group">
+            <label class="form-label">ZIP</label>
+            <input class="form-input" id="acct-address-zip" placeholder="12345" maxlength="10" autocomplete="off">
+          </div>
+        </div>
+      </div>
       <!-- Liability-only fields -->
       <div id="acct-liability-fields" style="display:none">
         <div class="form-row">
@@ -2576,6 +2959,32 @@
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeModal('modal-txn-period')">Cancel</button>
       <button class="btn-primary" onclick="applyAppPeriodRange()">Apply</button>
+    </div>
+  </div>
+</div>
+
+<!-- Budget comparison period modal -->
+<div class="modal-overlay" id="modal-budget-period">
+  <div class="modal" style="width:400px">
+    <div class="modal-header">
+      <span class="modal-title">Change Budget Period</span>
+      <button class="modal-close" onclick="closeModal('modal-budget-period')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Start Date</label>
+          <input class="form-input" type="date" id="budget-period-start">
+        </div>
+        <div class="form-group">
+          <label class="form-label">End Date</label>
+          <input class="form-input" type="date" id="budget-period-end">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-budget-period')">Cancel</button>
+      <button class="btn-primary" onclick="applyBudgetPeriodRange()">Apply</button>
     </div>
   </div>
 </div>
@@ -2693,6 +3102,23 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="modal-demo-purchase">
+  <div class="modal" style="width:460px">
+    <div class="modal-header">
+      <span class="modal-title">Demo only</span>
+      <button class="modal-close" type="button" onclick="closeModal('modal-demo-purchase')">×</button>
+    </div>
+    <div class="modal-body">
+      <p class="demo-purchase-extra" id="demo-purchase-extra" hidden></p>
+      <p class="demo-purchase-copy">This is a demo only. If you would like to purchase the full copy, contact Alan at <a href="mailto:acdelgato@gmail.com">acdelgato@gmail.com</a>.</p>
+      <p class="auth-notice" style="margin-bottom:0">This is a demo of the real product only. Data is kept for 7 days.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-primary" type="button" onclick="closeModal('modal-demo-purchase')">OK</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modal-sample-household">
   <div class="modal" style="width:460px">
     <div class="modal-header">
@@ -2709,6 +3135,7 @@
   </div>
 </div>
 
+<script src="config.js"></script>
 <script>
   /* ══════════════════════════════════════════════════════
      AUTH — sign in, sign out, and who is logged in
@@ -2717,8 +3144,30 @@
   let authMode = 'login';
   let authNeedsSetup = false;
   let primaryUserId = null;
+  const SESSION_TOKEN_KEY = 'finara_demo_session';
+
+  function apiBase() {
+    return String(window.FINARA_API || '').replace(/\/+$/, '');
+  }
+
+  function apiUrl(path) {
+    if (/^https?:\/\//i.test(String(path))) return path;
+    return apiBase() + path;
+  }
+
+  function getSessionToken() {
+    try { return sessionStorage.getItem(SESSION_TOKEN_KEY) || ''; } catch (_) { return ''; }
+  }
+
+  function setSessionToken(token) {
+    try {
+      if (token) sessionStorage.setItem(SESSION_TOKEN_KEY, token);
+      else sessionStorage.removeItem(SESSION_TOKEN_KEY);
+    } catch (_) {}
+  }
 
   function applyAuthContext(payload) {
+    if (payload?.session_token) setSessionToken(payload.session_token);
     if (payload?.primary_user_id != null) {
       primaryUserId = payload.primary_user_id;
     } else if (payload?.user?.is_primary) {
@@ -2727,6 +3176,47 @@
   }
 
   const DEMO_NOTICE = 'This is a demo of the real product only. Data is kept for 7 days.';
+  const DEMO_TXN_CAP = 50;
+  const DEMO_PURCHASE_EMAIL = 'acdelgato@gmail.com';
+
+  function countAccountUserTransactions() {
+    return (txnData || []).filter(t => !isOpeningBalance(t)).length;
+  }
+
+  function isTxnCapReached() {
+    return !!txnAccountId && countAccountUserTransactions() >= DEMO_TXN_CAP;
+  }
+
+  function updateTxnCapMeter() {
+    const el = document.getElementById('txn-cap-meter');
+    if (!el) return;
+    if (!txnAccountId) {
+      el.hidden = true;
+      return;
+    }
+    if (txnLoading && !(txnData || []).length) return;
+    const used = countAccountUserTransactions();
+    el.hidden = false;
+    el.textContent = `${used} / ${DEMO_TXN_CAP} transactions`;
+    el.classList.toggle('is-full', used >= DEMO_TXN_CAP);
+  }
+
+  function showDemoPurchaseModal(opts = {}) {
+    const extra = document.getElementById('demo-purchase-extra');
+    if (extra) {
+      extra.hidden = !opts.detail;
+      extra.textContent = opts.detail || '';
+    }
+    openModal('modal-demo-purchase');
+  }
+
+  function handleDemoCapError(e) {
+    if (e?.code === 'DEMO_TXN_CAP' || e?.details?.demo_cap_reached || e?.demo_cap_reached) {
+      showDemoPurchaseModal();
+      return true;
+    }
+    return false;
+  }
 
   function isRegisterMode() {
     return authMode === 'register';
@@ -2744,6 +3234,8 @@
     const submit = document.getElementById('auth-submit-btn');
     const switchBtn = document.getElementById('auth-switch-btn');
     const displayWrap = document.getElementById('auth-display-wrap');
+    const emailWrap = document.getElementById('auth-email-wrap');
+    const notifyWrap = document.getElementById('auth-notify-wrap');
     if (title) title.textContent = registering ? 'Create an account' : 'Sign in';
     if (subtitle) {
       subtitle.textContent = registering
@@ -2757,6 +3249,14 @@
     if (displayWrap) {
       displayWrap.hidden = !registering;
       displayWrap.classList.toggle('is-visible', registering);
+    }
+    if (emailWrap) {
+      emailWrap.hidden = !registering;
+      emailWrap.classList.toggle('is-visible', registering);
+    }
+    if (notifyWrap) {
+      notifyWrap.hidden = !registering;
+      notifyWrap.classList.toggle('is-visible', registering);
     }
     const pw = document.getElementById('auth-password');
     if (pw) pw.autocomplete = registering ? 'new-password' : 'current-password';
@@ -2847,11 +3347,17 @@
     if (document.getElementById('account-types-list')?.innerHTML) renderAccountTypesModalList();
   }
 
+  function setNotifyFailedNote(show) {
+    const el = document.getElementById('demo-notify-banner');
+    if (el) el.hidden = !show;
+  }
+
   function showAuthScreen(needsSetup = false) {
     authNeedsSetup = needsSetup;
     authMode = needsSetup ? 'register' : 'login';
     document.body.classList.add('auth-locked');
     document.getElementById('auth-form')?.reset();
+    setNotifyFailedNote(false);
     renderAuthMode();
     document.getElementById('auth-username')?.focus();
   }
@@ -2878,12 +3384,20 @@
     };
     if (isRegisterMode()) {
       payload.display_name = document.getElementById('auth-display-name')?.value.trim() || payload.username;
+      const notify = !!document.getElementById('auth-notify')?.checked;
+      payload.notify_when_available = notify;
+      payload.email = document.getElementById('auth-email')?.value.trim() || '';
+      if (notify && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(payload.email)) {
+        setAuthError('Enter a valid email address to be notified.');
+        return;
+      }
     }
     const endpoint = isRegisterMode() ? '/api/auth/register' : '/api/auth/login';
     try {
       const data = await API.post(endpoint, payload);
       applyAuthContext(data);
       showAppShell(data.user);
+      setNotifyFailedNote(!!data.notify_requested && !data.notify_sent);
       await loadAppData();
       if (isRegisterMode()) await maybeOfferSampleHousehold();
     } catch (e) {
@@ -2898,6 +3412,7 @@
     currentUser = null;
     primaryUserId = null;
     txnTabOrder = [];
+    setSessionToken('');
     stopPlaidAutoSync();
     syncPermissionUI();
     showAuthScreen(false);
@@ -3003,13 +3518,25 @@
      API HELPERS — talk to the server and get data back
   ══════════════════════════════════════════════════════ */
   async function apiRequest(url, options = {}) {
-    const res = await fetch(url, { credentials: 'same-origin', ...options });
+    const headers = Object.assign({}, options.headers || {});
+    const token = getSessionToken();
+    if (token && !headers.Authorization) headers.Authorization = 'Bearer ' + token;
+    const res = await fetch(apiUrl(url), {
+      credentials: apiBase() ? 'include' : 'same-origin',
+      ...options,
+      headers,
+    });
     const data = await res.json().catch(() => ({}));
     if (res.status === 401 && !String(url).startsWith('/api/auth/')) {
       showAuthScreen(false);
       throw new Error(data.error || 'Not authenticated');
     }
-    if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
+    if (!res.ok) {
+      const err = new Error(data.error || `Request failed (${res.status})`);
+      err.code = data.code;
+      err.details = data;
+      throw err;
+    }
     return data;
   }
 
@@ -3074,6 +3601,13 @@
   let appPeriodType = 'all';
   let appCustomRange = null;
   let appPeriodMenuOpen = null;
+  let budgetComparePeriods = [
+    { type: 'monthly', offset: 0, customRange: null },
+    { type: 'monthly', offset: 1, customRange: null },
+  ];
+  let budgetPeriodModalSlot = 0;
+  let budgetHistoryPreset = '6';
+  let budgetHistoryFrom = '';
 
   let txnData       = [];
   let txnDisplayData = [];
@@ -3145,7 +3679,7 @@
   }
 
   function computeBalanceSheetTotals() {
-    const totalAssets = assetData.reduce((s, a) => s + a.balance, 0);
+    const totalAssets = assetData.reduce((s, a) => s + assetWorthForTotals(a), 0);
     const totalLiabilities = liabilityData.reduce((s, l) => s + l.balance, 0);
     const netWorth = totalAssets - totalLiabilities;
     const budgetTotals = computeBudgetCategoryTotals();
@@ -3436,15 +3970,61 @@
   }
 
   function renderBalanceSheetAccountRow(acct) {
+    let subtitle;
+    if (acct.kind === 'asset' && isRealEstateAssetType(acct.type)) {
+      subtitle = formatPropertyAddressLine(acct) || acct.property_type || acct.inst || 'Property';
+      subtitle = escHtml(subtitle);
+    } else if (acct.kind === 'asset' && isTransportationAssetType(acct.type)) {
+      subtitle = escHtml(acct.inst || 'Vehicle');
+    } else if (acct.kind === 'asset' && isHoldingAssetType(acct.type)) {
+      subtitle = escHtml(holdingSubtitle(acct));
+    } else {
+      const last4 = acct.last4 ? ` · ····${escHtml(acct.last4)}` : '';
+      subtitle = `${escHtml(acct.inst || '')}${last4}`;
+    }
+    const value = acct.kind === 'asset' ? (acct.displayBalance ?? acct.balance) : acct.balance;
     return `<tr>
       <td>
         <div class="acct-name">${escHtml(acct.name)}</div>
-        <div class="acct-inst">${escHtml(acct.inst)} · ····${escHtml(acct.last4)}</div>
+        <div class="acct-inst">${subtitle}</div>
         <div class="synced-ts">${escHtml(acct.synced || '')}</div>
       </td>
       <td>${typeBadge(acct.type)}</td>
-      <td class="num${acct.kind === 'liability' ? ' val-negative' : ''}">${acct.kind === 'liability' ? '−' : ''}$${fmt(acct.balance)}</td>
+      <td class="num${acct.kind === 'liability' ? ' val-negative' : ''}">${acct.kind === 'liability' ? '−' : ''}$${fmt(value)}</td>
     </tr>`;
+  }
+
+  function renderBalanceSheetChildRow(name, subtitle, type, value) {
+    return `<tr class="asset-child-row">
+      <td>
+        <div class="acct-name asset-child-label">${escHtml(name)}</div>
+        <div class="acct-inst">${escHtml(subtitle || '')}</div>
+      </td>
+      <td>${typeBadge(type)}</td>
+      <td class="num">$${fmt(value)}</td>
+    </tr>`;
+  }
+
+  function renderBalanceSheetAssetRows() {
+    const rows = [];
+    for (const a of assetData) {
+      if (isLinkedHolding(a)) continue;
+      if (isBrokerageAccountType(a.type)) {
+        const holdings = linkedHoldingsFor(a);
+        rows.push(renderBalanceSheetAccountRow({
+          ...a,
+          kind: 'asset',
+          displayBalance: assetDisplayValue(a),
+        }));
+        rows.push(renderBalanceSheetChildRow('Available cash', `Settled cash in ${a.name}`, 'Cash', brokerageAvailableCash(a)));
+        for (const h of holdings) {
+          rows.push(renderBalanceSheetChildRow(h.name, holdingSubtitle(h), h.type, h.balance || 0));
+        }
+        continue;
+      }
+      rows.push(renderBalanceSheetAccountRow({ ...a, kind: 'asset' }));
+    }
+    return rows.length ? rows.join('') : renderBalanceSheetEmptyRow(3, 'No assets');
   }
 
   function renderBalanceSheetTxnRow(t, positive) {
@@ -3510,9 +4090,7 @@
 
     const assetRows = document.getElementById('bs-asset-rows');
     if (assetRows) {
-      assetRows.innerHTML = assetData.length
-        ? assetData.map(a => renderBalanceSheetAccountRow({ ...a, kind: 'asset' })).join('')
-        : renderBalanceSheetEmptyRow(3, 'No assets');
+      assetRows.innerHTML = renderBalanceSheetAssetRows();
     }
 
     const liabilityRows = document.getElementById('bs-liability-rows');
@@ -3624,6 +4202,15 @@
     lines.push(csvRow('Assets'));
     lines.push(csvRow('Account', 'Institution', 'Type', 'Last 4', 'Balance'));
     for (const a of assetData) {
+      if (isLinkedHolding(a)) continue;
+      if (isBrokerageAccountType(a.type)) {
+        lines.push(csvRow(a.name, a.inst, a.type, a.last4, fmtMoney(assetDisplayValue(a))));
+        lines.push(csvRow('  Available cash', a.name, 'Cash', '', fmtMoney(brokerageAvailableCash(a))));
+        for (const h of linkedHoldingsFor(a)) {
+          lines.push(csvRow(`  ${h.name}`, h.inst || a.name, h.type, h.ticker || '', fmtMoney(h.balance)));
+        }
+        continue;
+      }
       lines.push(csvRow(a.name, a.inst, a.type, a.last4, fmtMoney(a.balance)));
     }
     lines.push(csvRow('Total Assets', '', '', '', fmtMoney(totalAssets)));
@@ -3882,26 +4469,344 @@
     };
   }
 
+  function startOfWeekSunday(d) {
+    const x = startOfDay(d);
+    x.setDate(x.getDate() - x.getDay());
+    return x;
+  }
+
+  function getBudgetCompareRange(type, offset = 0) {
+    if (type === 'all') return null;
+    const today = startOfDay(new Date());
+
+    if (type === 'bimonthly') {
+      const range = getSemiMonthlyPeriodAtOffset(offset);
+      const startDate = new Date(`${range.start}T12:00:00`);
+      const day = startDate.getDate();
+      const fullEnd = day >= 16
+        ? endOfDay(new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0))
+        : endOfDay(new Date(startDate.getFullYear(), startDate.getMonth(), 15));
+      return { start: range.start, end: timeToLocalIso(fullEnd) };
+    }
+
+    if (type === 'monthly') {
+      const start = startOfDay(new Date(today.getFullYear(), today.getMonth() - offset, 1));
+      const monthEnd = endOfDay(new Date(start.getFullYear(), start.getMonth() + 1, 0));
+      return { start: timeToLocalIso(start), end: timeToLocalIso(monthEnd) };
+    }
+
+    if (type === 'yearly') {
+      const year = today.getFullYear() - offset;
+      const start = startOfDay(new Date(year, 0, 1));
+      const yearEnd = endOfDay(new Date(year, 11, 31));
+      return { start: timeToLocalIso(start), end: timeToLocalIso(yearEnd) };
+    }
+
+    if (type === 'weekly') {
+      const weekStart = startOfWeekSunday(today);
+      weekStart.setDate(weekStart.getDate() - offset * 7);
+      const weekEndDate = endOfDay(new Date(weekStart.getTime() + 6 * 86400000));
+      return { start: timeToLocalIso(weekStart), end: timeToLocalIso(weekEndDate) };
+    }
+
+    if (type === 'biweekly') {
+      const weekStart = startOfWeekSunday(today);
+      const epoch = startOfWeekSunday(new Date(today.getFullYear(), 0, 1));
+      const days = Math.round((weekStart.getTime() - epoch.getTime()) / 86400000);
+      const blockIndex = Math.floor(days / 14) - offset;
+      const start = startOfDay(new Date(epoch.getTime() + blockIndex * 14 * 86400000));
+      const fullEnd = endOfDay(new Date(start.getTime() + 13 * 86400000));
+      return { start: timeToLocalIso(start), end: timeToLocalIso(fullEnd) };
+    }
+
+    return null;
+  }
+
+  function getBudgetPeriodActiveRange(period) {
+    if (!period) return null;
+    if (period.customRange) return period.customRange;
+    return getBudgetCompareRange(period.type, period.offset || 0);
+  }
+
+  function budgetPeriodKey(period) {
+    if (!period) return 'all';
+    if (period.customRange) return `custom:${period.customRange.start}:${period.customRange.end}`;
+    if (period.type === 'all') return 'all';
+    const range = getBudgetCompareRange(period.type, period.offset || 0);
+    if (!range) return 'all';
+    if (period.type === 'monthly') return `monthly:${range.start.slice(0, 7)}`;
+    if (period.type === 'yearly') return `yearly:${range.start.slice(0, 4)}`;
+    if (period.type === 'bimonthly') {
+      const day = Number(range.start.slice(8, 10));
+      const half = day >= 16 ? 'H2' : 'H1';
+      return `bimonthly:${range.start.slice(0, 7)}-${half}`;
+    }
+    return `${period.type}:${range.start}`;
+  }
+
+  function budgetPeriodShortLabel(period) {
+    if (!period) return '';
+    if (period.customRange) return formatAppPeriodRangeLabel(period.customRange);
+    if (period.type === 'all') return 'All transactions';
+    const range = getBudgetCompareRange(period.type, period.offset || 0);
+    if (!range) return getAppPeriodTypeLabel(period.type);
+    if (period.type === 'monthly') {
+      const d = new Date(`${range.start}T12:00:00`);
+      return d.toLocaleString('en-US', { month: 'short', year: 'numeric' });
+    }
+    if (period.type === 'yearly') return range.start.slice(0, 4);
+    return formatAppPeriodRangeLabel(range);
+  }
+
+  function budgetPeriodRangeLabel(period) {
+    if (period.type === 'all' && !period.customRange) return 'All transactions';
+    const range = getBudgetPeriodActiveRange(period);
+    return range ? formatAppPeriodRangeLabel(range) : getAppPeriodTypeLabel(period.type);
+  }
+
+  function budgetPeriodTiming(period) {
+    if (!period || (period.type === 'all' && !period.customRange)) return 'all';
+    const range = getBudgetPeriodActiveRange(period);
+    if (!range) return 'current';
+    const today = startOfDay(new Date()).getTime();
+    const start = startOfDay(new Date(`${range.start}T12:00:00`)).getTime();
+    const end = endOfDay(new Date(`${range.end}T12:00:00`)).getTime();
+    if (start > today) return 'future';
+    if (end < today) return 'past';
+    return 'current';
+  }
+
+  function budgetPeriodTitle(period) {
+    if (!period) return '';
+    if (period.customRange) return formatAppPeriodRangeLabel(period.customRange);
+    if (period.type === 'all') return 'All transactions';
+    const range = getBudgetCompareRange(period.type, period.offset || 0);
+    if (!range) return getAppPeriodTypeLabel(period.type);
+    if (period.type === 'monthly') {
+      const d = new Date(`${range.start}T12:00:00`);
+      return d.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+    }
+    if (period.type === 'yearly') return range.start.slice(0, 4);
+    if (period.type === 'weekly') return `Week of ${isoToDisplayDate(range.start)}`;
+    if (period.type === 'bimonthly') {
+      const d = new Date(`${range.start}T12:00:00`);
+      const half = d.getDate() >= 16 ? '16th–end' : '1st–15th';
+      return `${d.toLocaleString('en-US', { month: 'long', year: 'numeric' })} · ${half}`;
+    }
+    return formatAppPeriodRangeLabel(range);
+  }
+
+  function budgetPeriodNavLabel(period) {
+    if (!period) return '';
+    if (period.customRange) return isoToDisplayDate(period.customRange.start);
+    if (period.type === 'all') return '';
+    const range = getBudgetCompareRange(period.type, period.offset || 0);
+    if (!range) return 'Next';
+    if (period.type === 'monthly') {
+      const d = new Date(`${range.start}T12:00:00`);
+      return d.toLocaleString('en-US', { month: 'short', year: 'numeric' });
+    }
+    if (period.type === 'yearly') return range.start.slice(0, 4);
+    return isoToDisplayDate(range.start);
+  }
+
+  function cloneBudgetPeriodShift(period, direction) {
+    const next = {
+      type: period.type,
+      offset: period.offset || 0,
+      customRange: period.customRange ? { start: period.customRange.start, end: period.customRange.end } : null,
+    };
+    if (next.customRange) {
+      next.customRange = shiftIsoDateRange(next.customRange, direction);
+    } else {
+      next.offset = (next.offset || 0) - direction;
+    }
+    return next;
+  }
+
+  function txnInDateRange(t, range) {
+    if (!range) return true;
+    const ts = txnSortTime(t);
+    const start = startOfDay(new Date(`${range.start}T12:00:00`)).getTime();
+    const end = endOfDay(new Date(`${range.end}T12:00:00`)).getTime();
+    return ts >= start && ts <= end;
+  }
+
+  function calcBudgetActualInPeriod(category, kind, period) {
+    const catLower = String(category ?? '').trim().toLowerCase();
+    if (!catLower) return 0;
+    const normalizedKind = normalizeCategoryKind(kind);
+    if (normalizedKind !== 'income' && normalizedKind !== 'expense') return 0;
+    const isIncome = normalizedKind === 'income';
+    const range = getBudgetPeriodActiveRange(period);
+    let total = 0;
+    for (const t of allTxnData) {
+      if (isIncome ? !isIncomeTransaction(t) : !isExpenseTransaction(t)) continue;
+      if (String(t.cat ?? '').trim().toLowerCase() !== catLower) continue;
+      if (!txnInDateRange(t, range)) continue;
+      total += Math.abs(t.amt);
+    }
+    return total;
+  }
+
+  function periodDayCount(range) {
+    if (!range) return null;
+    const start = startOfDay(new Date(`${range.start}T12:00:00`)).getTime();
+    const end = endOfDay(new Date(`${range.end}T12:00:00`)).getTime();
+    return Math.max(1, Math.round((end - start) / 86400000) + 1);
+  }
+
+  function budgetedForComparePeriod(row, period) {
+    const amounts = row.period_amounts || {};
+    const key = budgetPeriodKey(period);
+    if (Object.prototype.hasOwnProperty.call(amounts, key)) {
+      return Number(amounts[key]) || 0;
+    }
+    if (budgetPeriodTiming(period) === 'future') return 0;
+    const budgeted = Number(row.budgeted) || 0;
+    if (period.type === 'all' && !period.customRange) return budgeted;
+
+    const rowTf = normalizeBudgetTimeframe(row.timeframe);
+    const rowType = BUDGET_TF_TO_APP[rowTf];
+    if (rowType && rowType === period.type && !period.customRange) return budgeted;
+
+    const viewDays = periodDayCount(getBudgetPeriodActiveRange(period));
+    const rowBounds = getBudgetTimeframeBounds(rowTf);
+    const rowDays = rowBounds
+      ? Math.max(1, Math.round((rowBounds.end - rowBounds.start) / 86400000) + 1)
+      : null;
+    if (!viewDays || !rowDays) return budgeted;
+    return budgeted * (viewDays / rowDays);
+  }
+
+  function budgetRowCompareValues(row) {
+    const kind = budgetRowKind(row);
+    const periods = budgetComparePeriods.map(period => {
+      const budgeted = budgetedForComparePeriod(row, period);
+      const actual = calcBudgetActualInPeriod(row.category, kind, period);
+      const key = budgetPeriodKey(period);
+      const stored = Object.prototype.hasOwnProperty.call(row.period_amounts || {}, key);
+      return {
+        budgeted,
+        actual,
+        remaining: actual - budgeted,
+        stored,
+        future: budgetPeriodTiming(period) === 'future',
+      };
+    });
+    return { ...row, kind, periods };
+  }
+
+  function computeBudgetCompareTotals() {
+    const slots = budgetComparePeriods.map(() => ({
+      income: 0, expense: 0, budgetIncome: 0, budgetExpense: 0,
+    }));
+    for (const row of budgetData) {
+      if (!isBudgetCategoryRow(row)) continue;
+      const display = budgetRowCompareValues(row);
+      display.periods.forEach((p, i) => {
+        if (display.kind === 'income') {
+          slots[i].income += p.actual;
+          slots[i].budgetIncome += p.budgeted;
+        } else {
+          slots[i].expense += p.actual;
+          slots[i].budgetExpense += p.budgeted;
+        }
+      });
+    }
+    return slots.map(s => ({ ...s, net: s.income - s.expense }));
+  }
+
+  function budgetRemainingClass(kind, rem) {
+    return kind === 'income'
+      ? (rem >= 0 ? 'rem-positive' : 'rem-negative')
+      : (rem > 0 ? 'rem-negative' : 'rem-positive');
+  }
+
+  function formatBudgetSignedMoney(n) {
+    return `${n < 0 ? '−' : ''}$${fmt(Math.abs(n))}`;
+  }
+
   function typeBadge(type) {
-    const map = { Checking:'', Savings:'', Brokerage:'invest', 'Real Estate':'realestate', Transportation:'transportation', Credit:'credit', Loan:'loan' };
+    const map = { Checking:'', Savings:'', Brokerage:'invest', Investment:'invest', Stock:'invest', ETF:'invest', 'Mutual fund':'invest', Bond:'invest', Other:'invest', Cash:'cash', 'Real Estate':'realestate', Transportation:'transportation', Credit:'credit', Loan:'loan' };
     const cls = map[type] || '';
     return `<span class="type-badge${cls ? ' '+cls : ''}">${type}</span>`;
   }
 
+  function isRealEstateAssetType(type) {
+    return type === 'Real Estate' || type === 'Property';
+  }
+
+  function isHoldingAssetType(type) {
+    return type === 'Stock' || type === 'ETF' || type === 'Mutual fund' || type === 'Bond' || type === 'Other';
+  }
+
+  function isBrokerageAccountType(type) {
+    return type === 'Brokerage' || type === 'Investment';
+  }
+
+  function isTxnLedgerAccount(acct) {
+    return !isHoldingAssetType(acct?.type);
+  }
+
   function assetUsesBasis(type) {
-    return type === 'Real Estate' || type === 'Transportation';
+    return isRealEstateAssetType(type) || type === 'Transportation' || isHoldingAssetType(type);
   }
 
   function isValuedAssetType(type) {
-    return type === 'Real Estate' || type === 'Transportation';
-  }
-
-  function isRealEstateAssetType(type) {
-    return type === 'Real Estate';
+    return isRealEstateAssetType(type) || type === 'Transportation';
   }
 
   function isTransportationAssetType(type) {
     return type === 'Transportation';
+  }
+
+  function brokerageParentFor(a) {
+    if (!a?.brokerage_account_id) return null;
+    return assetData.find(p => isBrokerageAccountType(p.type) && Number(p.id) === Number(a.brokerage_account_id)) || null;
+  }
+
+  function isLinkedHolding(a) {
+    return isHoldingAssetType(a?.type) && !!brokerageParentFor(a);
+  }
+
+  function linkedHoldingsFor(acct) {
+    return assetData
+      .filter(a => isHoldingAssetType(a.type) && Number(a.brokerage_account_id) === Number(acct.id))
+      .sort((a, b) => String(a.name || '').localeCompare(String(b.name || ''), undefined, { sensitivity: 'base' }));
+  }
+
+  function brokerageAvailableCash(acct) {
+    return Number(acct?.balance) || 0;
+  }
+
+  function assetDisplayValue(a) {
+    if (isBrokerageAccountType(a?.type)) {
+      return brokerageAvailableCash(a) + linkedHoldingsFor(a).reduce((s, h) => s + (Number(h.balance) || 0), 0);
+    }
+    return Number(a?.balance) || 0;
+  }
+
+  function assetWorthForTotals(a) {
+    if (isLinkedHolding(a)) return 0;
+    return assetDisplayValue(a);
+  }
+
+  function formatHoldingShares(shares) {
+    if (shares == null || shares === '') return '';
+    const n = Number(shares);
+    if (!Number.isFinite(n)) return '';
+    return Number.isInteger(n) ? String(n) : String(n);
+  }
+
+  function holdingSubtitle(a) {
+    const parts = [];
+    const ticker = String(a.ticker || '').trim();
+    if (ticker) parts.push(ticker.toUpperCase());
+    const sh = formatHoldingShares(a.shares);
+    if (sh) parts.push(`${sh} sh`);
+    if (a.inst) parts.push(a.inst);
+    return parts.join(' · ') || 'Holding';
   }
 
   function assetDisplayCost(a) {
@@ -3915,12 +4820,27 @@
     return a.balance - cost;
   }
 
+  function formatPropertyAddressLine(a) {
+    const street = String(a?.address_street || '').trim();
+    const cityState = [a?.address_city, a?.address_state].map(s => String(s || '').trim()).filter(Boolean).join(', ');
+    const zip = String(a?.address_zip || '').trim();
+    return [street, cityState, zip].filter(Boolean).join(', ');
+  }
+
   function assetCatalogSubtitle(a) {
     if (isTransportationAssetType(a.type)) {
       return a.inst ? escHtml(a.inst) : '<span style="color:var(--text-muted)">Vehicle</span>';
     }
     if (isRealEstateAssetType(a.type)) {
-      return a.inst ? escHtml(a.inst) : '<span style="color:var(--text-muted)">Property</span>';
+      const parts = [a.property_type, formatPropertyAddressLine(a) || a.inst].filter(Boolean);
+      return parts.length
+        ? escHtml(parts.join(' · '))
+        : '<span style="color:var(--text-muted)">Property</span>';
+    }
+    if (isHoldingAssetType(a.type)) return escHtml(holdingSubtitle(a));
+    if (isBrokerageAccountType(a.type)) {
+      const last4 = a.last4 ? ` ····${escHtml(a.last4)}` : '';
+      return `${escHtml(a.inst || '')}${last4}`;
     }
     const last4 = a.last4 ? ` · ····${escHtml(a.last4)}` : '';
     return `${escHtml(a.inst)}${last4}`;
@@ -4021,22 +4941,25 @@
     let investedCount = 0;
 
     for (const a of assetData) {
+      if (isLinkedHolding(a)) continue;
+      const value = assetDisplayValue(a);
       if (isLiquidAssetType(a.type)) {
-        liquid += a.balance;
+        liquid += value;
         liquidCount++;
       } else {
-        invested += a.balance;
+        invested += value;
         investedCount++;
       }
     }
 
+    const visibleCount = assetData.filter(a => !isLinkedHolding(a)).length;
     return {
       total: liquid + invested,
       liquid,
       invested,
       liquidCount,
       investedCount,
-      totalCount: assetData.length,
+      totalCount: visibleCount,
     };
   }
 
@@ -4062,35 +4985,91 @@
     let totalVal = 0, totalCost = 0, totalGain = 0, hasCost = false;
     const canWrite = currentUserCanWrite();
     const canDelete = currentUserCanDelete();
-    tbody.innerHTML = assetData.map((a, i) => {
-      const cost = assetDisplayCost(a);
-      const gain = assetGainLoss(a);
-      totalVal += a.balance;
-      if (cost != null) {
-        hasCost = true;
-        totalCost += cost;
-        totalGain += gain;
+
+    function assetRowHtml(a, i, opts = {}) {
+      const displayBal = opts.displayBalance ?? a.balance;
+      const cost = opts.cost !== undefined ? opts.cost : assetDisplayCost(a);
+      const gain = cost != null ? displayBal - cost : null;
+      if (!opts.skipTotals) {
+        totalVal += displayBal;
+        if (cost != null) {
+          hasCost = true;
+          totalCost += cost;
+          totalGain += gain;
+        }
       }
-      const rowAttrs = canWrite
-        ? `class="txn-row" onclick="editAsset(${i})" title="Click to edit"`
-        : 'class="txn-row"';
-      const deleteBtn = canDelete
-        ? `<button type="button" class="action-btn del" onclick="event.stopPropagation(); deleteAsset(${i})">Delete</button>`
+      const childClass = opts.child ? ' asset-child-row' : '';
+      const rowAttrs = canWrite && opts.onClick
+        ? `class="txn-row${childClass}" onclick="${opts.onClick}" title="${escHtml(opts.title || 'Click to edit')}"`
+        : `class="txn-row${childClass}"`;
+      const deleteBtn = canDelete && opts.deleteIdx != null
+        ? `<button type="button" class="action-btn del" onclick="event.stopPropagation(); deleteAsset(${opts.deleteIdx})">Delete</button>`
         : '';
+      const nameClass = opts.child ? 'acct-name asset-child-label' : 'acct-name';
       return `<tr ${rowAttrs}>
-        <td><div class="acct-name">${escHtml(a.name)}</div><div class="acct-inst">${assetCatalogSubtitle(a)}</div></td>
-        <td style="color:var(--text-secondary);font-size:12px">${escHtml(a.inst)}</td>
-        <td>${typeBadge(a.type)}</td>
-        <td style="font-size:11px;color:var(--text-muted)">${formatAccountOpeningDate(a.opening_date)}</td>
-        <td class="num">$${fmt(a.balance)}</td>
+        <td><div class="${nameClass}">${opts.nameHtml || escHtml(a.name)}</div><div class="acct-inst">${opts.subtitleHtml || assetCatalogSubtitle(a)}</div></td>
+        <td style="color:var(--text-secondary);font-size:12px">${escHtml(opts.inst != null ? opts.inst : a.inst)}</td>
+        <td>${typeBadge(opts.type || a.type)}</td>
+        <td style="font-size:11px;color:var(--text-muted)">${opts.date != null ? opts.date : formatAccountOpeningDate(a.opening_date)}</td>
+        <td class="num">$${fmt(displayBal)}</td>
         <td class="num" style="color:var(--text-muted)">${cost != null ? '$'+fmt(cost) : '—'}</td>
         <td class="num ${gain != null && gain >= 0 ? 'val-positive' : gain != null ? 'val-negative' : ''}">${gain != null ? (gain >= 0 ? '+' : '−')+'$'+fmt(Math.abs(gain)) : '—'}</td>
-        <td style="font-size:11px;color:var(--text-muted)">${a.synced}</td>
+        <td style="font-size:11px;color:var(--text-muted)">${opts.synced != null ? opts.synced : (a.synced || '')}</td>
         <td class="actions-cell" onclick="event.stopPropagation()">
           ${deleteBtn}
         </td>
       </tr>`;
-    }).join('');
+    }
+
+    const html = [];
+    assetData.forEach((a, i) => {
+      if (isLinkedHolding(a)) return;
+      if (isBrokerageAccountType(a.type)) {
+        const holdings = linkedHoldingsFor(a);
+        const parentCost = holdings.reduce((s, h) => {
+          const c = assetDisplayCost(h);
+          return c != null ? s + c : s;
+        }, 0);
+        const hasHoldingCost = holdings.some(h => assetDisplayCost(h) != null);
+        html.push(assetRowHtml(a, i, {
+          displayBalance: assetDisplayValue(a),
+          cost: hasHoldingCost ? brokerageAvailableCash(a) + parentCost : null,
+          onClick: `editAsset(${i})`,
+          deleteIdx: i,
+          subtitleHtml: `${assetCatalogSubtitle(a)}<div class="asset-parent-meta">Available cash + holdings</div>`,
+        }));
+        html.push(assetRowHtml(a, i, {
+          child: true,
+          skipTotals: true,
+          displayBalance: brokerageAvailableCash(a),
+          cost: null,
+          nameHtml: 'Available cash',
+          subtitleHtml: escHtml(`Settled cash in ${a.name}`),
+          inst: '',
+          type: 'Cash',
+          date: '',
+          synced: '',
+          onClick: `editAsset(${i})`,
+          title: 'Edit brokerage cash',
+        }));
+        holdings.forEach(h => {
+          const hi = assetData.findIndex(x => Number(x.id) === Number(h.id));
+          html.push(assetRowHtml(h, hi, {
+            child: true,
+            skipTotals: true,
+            onClick: hi >= 0 ? `editAsset(${hi})` : '',
+            deleteIdx: hi >= 0 ? hi : null,
+            subtitleHtml: escHtml(holdingSubtitle(h)),
+          }));
+        });
+        return;
+      }
+      html.push(assetRowHtml(a, i, {
+        onClick: `editAsset(${i})`,
+        deleteIdx: i,
+      }));
+    });
+    tbody.innerHTML = html.join('');
     const gainClass = totalGain >= 0 ? 'val-positive' : 'val-negative';
     const gainStr = hasCost
       ? (totalGain >= 0 ? '+' : '−') + '$' + fmt(Math.abs(totalGain))
@@ -4142,27 +5121,77 @@
     </tr>`;
   }
 
+  function renderBudgetTableHead(kind) {
+    const thead = document.getElementById(`budget-${kind}-thead`);
+    if (!thead) return;
+    const groups = budgetComparePeriods.map((period, slot) => {
+      const timing = budgetPeriodTiming(period);
+      const extra = slot === 1 ? ' budget-period-group-alt' : '';
+      const timingClass = timing === 'future' ? ' budget-period-group-future' : timing === 'current' ? ' budget-period-group-current' : '';
+      const badge = timing === 'future' ? ' · Future' : timing === 'current' ? ' · Current' : '';
+      return `<th class="num budget-period-group${extra}${timingClass}" colspan="3">${escHtml(budgetPeriodTitle(period))}${escHtml(badge)}</th>`;
+    });
+    thead.innerHTML = `<tr>
+      <th rowspan="2" style="width:22%">Category</th>
+      <th rowspan="2">Cadence</th>
+      ${groups.join('')}
+      <th rowspan="2"></th>
+    </tr>
+    <tr>
+      <th class="num">Budget</th>
+      <th class="num">Actual</th>
+      <th class="num">Remaining</th>
+      <th class="num">Budget</th>
+      <th class="num">Actual</th>
+      <th class="num">Remaining</th>
+    </tr>`;
+  }
+
+  function renderBudgetPeriodCells(periods, kind, opts = {}) {
+    const editing = !!opts.editing;
+    return periods.map((p, slot) => {
+      const remClass = budgetRemainingClass(kind, p.remaining);
+      const unplanned = p.future && !p.stored;
+      if (editing) {
+        const emptyBudget = opts.placeholder || unplanned;
+        const valueAttr = emptyBudget ? ' placeholder="0.00"' : ` value="${p.budgeted}"`;
+        const actualText = opts.placeholder ? '—' : `$${fmt(p.actual)}`;
+        const remText = opts.placeholder || unplanned ? '—' : formatBudgetSignedMoney(p.remaining);
+        return `<td><input class="txn-inline-input num" type="number" step="0.01" min="0" id="budget-inline-budgeted-${slot}"${valueAttr} onclick="event.stopPropagation()"></td>
+      <td class="num budget-actual-readonly">${actualText}</td>
+      <td class="num ${opts.placeholder || unplanned ? '' : remClass}" style="${opts.placeholder || unplanned ? 'color:var(--text-muted)' : ''}">${remText}</td>`;
+      }
+      const budgetText = unplanned ? '—' : `$${fmt(p.budgeted)}`;
+      const remText = unplanned ? '—' : formatBudgetSignedMoney(p.remaining);
+      return `<td class="num">${budgetText}</td>
+      <td class="num budget-actual-readonly">$${fmt(p.actual)}</td>
+      <td class="num ${unplanned ? '' : remClass}" style="${unplanned ? 'color:var(--text-muted)' : ''}">${remText}</td>`;
+    }).join('');
+  }
+
   function renderBudgetSection(kind, opts = {}) {
     const prefix = opts.prefix || 'budget';
-    const lockKind = opts.lockKind || null;
-    const hideKindColumn = opts.hideKindColumn ?? !!lockKind;
+    const lockKind = opts.lockKind || kind;
+    const hideKindColumn = opts.hideKindColumn ?? true;
     const rowOpts = { hideKindColumn, lockKind, prefix };
     const tbody = document.getElementById(`${prefix}-${kind}-rows`);
     const tfoot = document.getElementById(`${prefix}-${kind}-tfoot`);
     const meta = document.getElementById(`${prefix}-${kind}-meta`);
-    if (!tbody || !tfoot) return { totalB: 0, totalA: 0 };
+    if (!tbody || !tfoot) return { totals: [] };
+    renderBudgetTableHead(kind);
     const isIncome = kind === 'income';
-    const isTransfer = kind === 'transfer';
-    let totalB = 0, totalA = 0;
+    const totals = budgetComparePeriods.map(() => ({ B: 0, A: 0 }));
     let count = 0;
 
     let html = budgetData.map((row, i) => {
       if (!isBudgetCategoryRow(row)) return '';
       if (budgetRowKind(row) !== kind) return '';
       count += 1;
-      const displayRow = budgetRowWithActual(row);
-      totalB += displayRow.viewBudgeted;
-      totalA += displayRow.actual;
+      const displayRow = budgetRowCompareValues(row);
+      displayRow.periods.forEach((p, slot) => {
+        totals[slot].B += p.budgeted;
+        totals[slot].A += p.actual;
+      });
       if (budgetEditingIdx === i && budgetEditingPrefix === prefix) return renderBudgetEditRow(displayRow, i, kind, rowOpts);
       return renderBudgetDisplayRow(displayRow, i, kind, rowOpts);
     }).join('');
@@ -4175,30 +5204,21 @@
 
     tbody.innerHTML = html;
 
-    const totRem = totalA - totalB;
-    const totPct = totalB > 0 ? ((totalA / totalB) * 100).toFixed(0) : 0;
-    const remClass = isTransfer
-      ? (totRem > 0 ? 'rem-negative' : 'rem-positive')
-      : isIncome
-        ? (totRem >= 0 ? 'rem-positive' : 'rem-negative')
-        : (totRem > 0 ? 'rem-negative' : 'rem-positive');
-    const sectionLabel = isIncome ? 'Income' : isTransfer ? 'Transfers' : 'Expenses';
-    const footColspan = hideKindColumn ? 2 : 3;
+    const sectionLabel = isIncome ? 'Income' : 'Expenses';
     tfoot.innerHTML = `<tr class="tfoot-row">
-      <td colspan="${footColspan}">Total ${sectionLabel}</td>
-      <td class="num">$${fmt(totalB)}</td>
-      <td class="num">$${fmt(totalA)}</td>
-      <td class="num ${remClass}">${totRem < 0 ? '−' : ''}$${fmt(Math.abs(totRem))}</td>
-      <td class="num" style="font-weight:700">${totPct}%</td>
-      <td></td><td></td>
+      <td colspan="2">Total ${sectionLabel}</td>
+      ${totals.map(t => {
+        const rem = t.A - t.B;
+        return `<td class="num">$${fmt(t.B)}</td>
+      <td class="num">$${fmt(t.A)}</td>
+      <td class="num ${budgetRemainingClass(kind, rem)}">${formatBudgetSignedMoney(rem)}</td>`;
+      }).join('')}
+      <td></td>
     </tr>`;
     if (meta) {
-      const periodMeta = appPeriodType === 'all'
-        ? 'All transactions'
-        : getAppPeriodTriggerLabel();
-      meta.textContent = `${count} ${count === 1 ? 'category' : 'categories'} · ${periodMeta}`;
+      meta.textContent = `${count} ${count === 1 ? 'category' : 'categories'} · ${budgetPeriodShortLabel(budgetComparePeriods[0])} vs ${budgetPeriodShortLabel(budgetComparePeriods[1])}`;
     }
-    return { totalB, totalA };
+    return { totals };
   }
 
   function renderBudget() {
@@ -4206,29 +5226,29 @@
       budgetEditingIdx = null;
       budgetEditingPrefix = 'budget';
     }
-    renderBudgetSection('income');
-    renderBudgetSection('expense');
-    const totals = computeBudgetCategoryTotals();
-    const net = totals.profitLoss;
+    renderBudgetSection('income', { lockKind: 'income', hideKindColumn: true });
+    renderBudgetSection('expense', { lockKind: 'expense', hideKindColumn: true });
+    const [p0, p1] = computeBudgetCompareTotals();
+    const net = p0.net;
 
     const incomeEl = document.getElementById('budget-total-income');
     const expenseEl = document.getElementById('budget-total-expense');
     const netEl = document.getElementById('budget-net-value');
-    if (incomeEl) incomeEl.textContent = `$${fmt(totals.totalIncome)}`;
-    if (expenseEl) expenseEl.textContent = `$${fmt(totals.totalExpense)}`;
+    if (incomeEl) incomeEl.textContent = `$${fmt(p0.income)}`;
+    if (expenseEl) expenseEl.textContent = `$${fmt(p0.expense)}`;
     if (netEl) {
       netEl.textContent = `${net < 0 ? '−' : ''}$${fmt(Math.abs(net))}`;
       netEl.className = `stat-value ${net >= 0 ? 'val-positive' : 'val-negative'}`;
     }
 
-    const periodMeta = appPeriodType === 'all'
-      ? 'All transactions'
-      : getAppPeriodTriggerLabel();
-    setBalanceSheetText('budget-total-income-meta', `Budget category actual · ${periodMeta}`);
-    setBalanceSheetText('budget-total-expense-meta', `Budget category actual · ${periodMeta}`);
-    setBalanceSheetText('budget-net-meta', `Income − expenses · ${periodMeta}`);
+    const label0 = budgetPeriodShortLabel(budgetComparePeriods[0]);
+    const label1 = budgetPeriodShortLabel(budgetComparePeriods[1]);
+    setBalanceSheetText('budget-total-income-meta', `${label0} actual · ${label1} $${fmt(p1.income)}`);
+    setBalanceSheetText('budget-total-expense-meta', `${label0} actual · ${label1} $${fmt(p1.expense)}`);
+    setBalanceSheetText('budget-net-meta', `${label0} · ${label1} ${formatBudgetSignedMoney(p1.net)}`);
 
     updateBudgetPeriodDisplay();
+    renderBudgetHistoryChart();
 
     if (budgetEditingIdx !== null) {
       const catEl = document.getElementById('budget-inline-cat');
@@ -4275,35 +5295,281 @@
   }
 
   function updateBudgetPeriodDisplay() {
-    syncAppPeriodUI();
+    syncBudgetPeriodUI();
+  }
+
+  function defaultBudgetCadence() {
+    return APP_TO_BUDGET_TF[budgetComparePeriods[0]?.type] || 'Monthly';
+  }
+
+  function syncBudgetPeriodUI() {
+    for (let slot = 0; slot < 2; slot++) {
+      const period = budgetComparePeriods[slot];
+      const selectEl = document.getElementById(`budget-period-${slot}-type`);
+      if (selectEl) selectEl.value = APP_TO_BUDGET_TF[period.type] || 'Monthly';
+      const isAll = period.type === 'all' && !period.customRange;
+      const timing = budgetPeriodTiming(period);
+
+      const titleEl = document.getElementById(`budget-period-${slot}-title`);
+      if (titleEl) titleEl.textContent = budgetPeriodTitle(period);
+
+      const rangeEl = document.getElementById(`budget-period-${slot}-range`);
+      if (rangeEl) {
+        rangeEl.textContent = isAll ? 'All transactions' : budgetPeriodRangeLabel(period);
+        rangeEl.hidden = isAll;
+      }
+
+      const whenEl = document.getElementById(`budget-period-${slot}-when`);
+      if (whenEl) {
+        whenEl.textContent = timing === 'future' ? 'Future' : timing === 'past' ? 'Past' : timing === 'current' ? 'Current' : '';
+        whenEl.className = `budget-period-when budget-period-when-${timing}`;
+        whenEl.hidden = isAll;
+      }
+
+      const prevEl = document.getElementById(`budget-period-${slot}-prev`);
+      if (prevEl) {
+        prevEl.hidden = isAll;
+        const neighbor = isAll ? null : cloneBudgetPeriodShift(period, -1);
+        prevEl.textContent = neighbor ? `← ${budgetPeriodNavLabel(neighbor)}` : '← Back';
+      }
+      const nextEl = document.getElementById(`budget-period-${slot}-next`);
+      if (nextEl) {
+        nextEl.hidden = isAll;
+        nextEl.disabled = false;
+        const neighbor = isAll ? null : cloneBudgetPeriodShift(period, 1);
+        nextEl.textContent = neighbor ? `${budgetPeriodNavLabel(neighbor)} →` : 'Forward →';
+      }
+
+      const jumpEl = document.getElementById(`budget-period-${slot}-current`);
+      if (jumpEl) {
+        jumpEl.hidden = isAll || timing === 'current';
+        jumpEl.textContent = period.type === 'yearly' ? 'This year'
+          : period.type === 'weekly' ? 'This week'
+          : period.type === 'monthly' ? 'This month'
+          : 'This period';
+      }
+
+      const customEl = document.getElementById(`budget-period-${slot}-custom-btn`);
+      if (customEl) customEl.hidden = isAll;
+    }
+  }
+
+  function setBudgetCompareType(slot, value) {
+    const tf = normalizeBudgetTimeframe(value);
+    const type = BUDGET_TF_TO_APP[tf] || 'monthly';
+    budgetComparePeriods[slot] = { type, offset: 0, customRange: null };
+    renderBudget();
+  }
+
+  function shiftIsoDateRange(range, direction) {
+    const start = startOfDay(new Date(`${range.start}T12:00:00`));
+    const end = startOfDay(new Date(`${range.end}T12:00:00`));
+    const days = Math.max(1, Math.round((end - start) / 86400000) + 1);
+    start.setDate(start.getDate() + direction * days);
+    end.setDate(end.getDate() + direction * days);
+    return { start: timeToLocalIso(start), end: timeToLocalIso(end) };
+  }
+
+  function shiftBudgetComparePeriod(slot, direction) {
+    const period = budgetComparePeriods[slot];
+    if (!period) return;
+    if (period.type === 'all' && !period.customRange) return;
+    if (period.customRange) {
+      period.customRange = shiftIsoDateRange(period.customRange, direction);
+    } else {
+      period.offset = (period.offset || 0) - direction;
+    }
+    renderBudget();
+  }
+
+  function jumpBudgetCompareToCurrent(slot) {
+    const period = budgetComparePeriods[slot];
+    if (!period) return;
+    const type = period.type === 'all' ? 'monthly' : period.type;
+    budgetComparePeriods[slot] = { type, offset: 0, customRange: null };
+    renderBudget();
+  }
+
+  function openBudgetPeriodModal(slot) {
+    const period = budgetComparePeriods[slot];
+    if (!period || (period.type === 'all' && !period.customRange)) return;
+    const range = getBudgetPeriodActiveRange(period);
+    if (!range) return;
+    budgetPeriodModalSlot = slot;
+    document.getElementById('budget-period-start').value = range.start;
+    document.getElementById('budget-period-end').value = range.end;
+    openModal('modal-budget-period');
+  }
+
+  function applyBudgetPeriodRange() {
+    const start = document.getElementById('budget-period-start').value;
+    const end = document.getElementById('budget-period-end').value;
+    if (!start || !end) {
+      alert('Please choose both a start date and an end date.');
+      return;
+    }
+    if (start > end) {
+      alert('Start date must be on or before the end date.');
+      return;
+    }
+    budgetComparePeriods[budgetPeriodModalSlot].customRange = { start, end };
+    closeModal('modal-budget-period');
+    renderBudget();
+  }
+
+  function defaultBudgetHistoryFromIso() {
+    const d = new Date();
+    d.setMonth(d.getMonth() - 5);
+    d.setDate(1);
+    return timeToLocalIso(startOfDay(d));
+  }
+
+  function setBudgetHistoryRange(value) {
+    budgetHistoryPreset = value || '6';
+    const fromEl = document.getElementById('budget-history-from');
+    if (fromEl) {
+      fromEl.hidden = budgetHistoryPreset !== 'from';
+      fromEl.max = timeToLocalIso(startOfDay(new Date()));
+      if (budgetHistoryPreset === 'from' && !budgetHistoryFrom) {
+        budgetHistoryFrom = defaultBudgetHistoryFromIso();
+        fromEl.value = budgetHistoryFrom;
+      }
+    }
+    renderBudgetHistoryChart();
+  }
+
+  function setBudgetHistoryFrom(value) {
+    budgetHistoryFrom = value || '';
+    renderBudgetHistoryChart();
+  }
+
+  function getBudgetHistoryMonths() {
+    const today = new Date();
+    const current = new Date(today.getFullYear(), today.getMonth(), 1);
+    let start;
+    if (budgetHistoryPreset === 'from' && budgetHistoryFrom) {
+      const d = new Date(`${budgetHistoryFrom}T12:00:00`);
+      start = Number.isNaN(d.getTime())
+        ? new Date(current.getFullYear(), current.getMonth() - 5, 1)
+        : new Date(d.getFullYear(), d.getMonth(), 1);
+    } else {
+      const count = Number(budgetHistoryPreset) || 6;
+      start = new Date(current.getFullYear(), current.getMonth() - (count - 1), 1);
+    }
+    if (start > current) start = new Date(current.getFullYear(), current.getMonth(), 1);
+    const maxStart = new Date(current.getFullYear(), current.getMonth() - 35, 1);
+    if (start < maxStart) start = maxStart;
+
+    const months = [];
+    let year = start.getFullYear();
+    let month = start.getMonth();
+    while (year < current.getFullYear() || (year === current.getFullYear() && month <= current.getMonth())) {
+      const offset = (today.getFullYear() - year) * 12 + (today.getMonth() - month);
+      months.push({ type: 'monthly', offset, customRange: null });
+      month += 1;
+      if (month > 11) { month = 0; year += 1; }
+    }
+    return months;
+  }
+
+  function computeBudgetHistoryPoints() {
+    const months = getBudgetHistoryMonths();
+    return months.map(period => {
+      let budget = 0;
+      let actual = 0;
+      for (const row of budgetData) {
+        if (!isBudgetCategoryRow(row)) continue;
+        const display = budgetRowCompareValuesForPeriod(row, period);
+        budget += display.budgeted;
+        actual += display.actual;
+      }
+      const range = getBudgetCompareRange('monthly', period.offset || 0);
+      const d = new Date(`${range.start}T12:00:00`);
+      return {
+        label: d.toLocaleString('en-US', { month: 'short' }) + " '" + String(d.getFullYear()).slice(2),
+        budget,
+        actual,
+      };
+    });
+  }
+
+  function budgetRowCompareValuesForPeriod(row, period) {
+    const kind = budgetRowKind(row);
+    return {
+      budgeted: budgetedForComparePeriod(row, period),
+      actual: calcBudgetActualInPeriod(row.category, kind, period),
+    };
+  }
+
+  function renderBudgetHistoryChart() {
+    const svg = document.getElementById('budget-history-chart');
+    if (!svg) return;
+    const fromEl = document.getElementById('budget-history-from');
+    if (fromEl) {
+      fromEl.max = timeToLocalIso(startOfDay(new Date()));
+      fromEl.hidden = budgetHistoryPreset !== 'from';
+      if (budgetHistoryPreset === 'from') fromEl.value = budgetHistoryFrom || defaultBudgetHistoryFromIso();
+    }
+    const presetEl = document.getElementById('budget-history-preset');
+    if (presetEl && presetEl.value !== budgetHistoryPreset) presetEl.value = budgetHistoryPreset;
+
+    const points = computeBudgetHistoryPoints();
+    const W = 720;
+    const H = 220;
+    const padL = 56;
+    const padR = 16;
+    const padT = 18;
+    const padB = 36;
+    const chartW = W - padL - padR;
+    const chartH = H - padT - padB;
+
+    if (!points.length) {
+      svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+      svg.innerHTML = `<text x="${W / 2}" y="${H / 2}" text-anchor="middle" font-size="12" fill="#9ca3af">No history to show</text>`;
+      return;
+    }
+
+    const vals = points.flatMap(p => [p.budget, p.actual]);
+    let minV = 0;
+    let maxV = Math.max(0, ...vals);
+    if (maxV === 0) maxV = 10;
+    const range = maxV - minV || 1;
+    const yFor = v => padT + chartH - ((v - minV) / range) * chartH;
+    const xFor = i => padL + (points.length === 1 ? chartW / 2 : (i / (points.length - 1)) * chartW);
+
+    let html = '';
+    const yTicks = [maxV, maxV / 2, 0];
+    yTicks.forEach(v => {
+      const y = yFor(v);
+      html += `<line x1="${padL}" y1="${y.toFixed(2)}" x2="${W - padR}" y2="${y.toFixed(2)}" stroke="#f3f4f6" stroke-width="1"/>`;
+      html += `<text x="${padL - 6}" y="${(y + 3).toFixed(2)}" text-anchor="end" font-size="9" fill="#9ca3af">${escHtml(fmtMoney(v))}</text>`;
+    });
+
+    const budgetPts = points.map((p, i) => `${xFor(i).toFixed(2)},${yFor(p.budget).toFixed(2)}`).join(' ');
+    const actualPts = points.map((p, i) => `${xFor(i).toFixed(2)},${yFor(p.actual).toFixed(2)}`).join(' ');
+    html += `<polyline points="${budgetPts}" fill="none" stroke="#2563eb" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+    html += `<polyline points="${actualPts}" fill="none" stroke="#7c3aed" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+
+    points.forEach((p, i) => {
+      html += `<circle cx="${xFor(i).toFixed(2)}" cy="${yFor(p.budget).toFixed(2)}" r="3.5" fill="#2563eb" stroke="#fff" stroke-width="1.5"/>`;
+      html += `<circle cx="${xFor(i).toFixed(2)}" cy="${yFor(p.actual).toFixed(2)}" r="3.5" fill="#7c3aed" stroke="#fff" stroke-width="1.5"/>`;
+    });
+
+    const labelEvery = points.length <= 8 ? 1 : Math.ceil(points.length / 8);
+    points.forEach((p, i) => {
+      if (i % labelEvery !== 0 && i !== points.length - 1) return;
+      html += `<text x="${xFor(i).toFixed(2)}" y="${H - 12}" text-anchor="middle" font-size="10" fill="#6b7280">${escHtml(p.label)}</text>`;
+    });
+
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.innerHTML = html;
   }
 
   function renderBudgetDisplayRow(row, i, kind, rowOpts = {}) {
-    const { hideKindColumn = false, prefix = 'budget' } = rowOpts;
+    const { prefix = 'budget' } = rowOpts;
     const canWrite = currentUserCanWrite();
     const canDelete = currentUserCanDelete();
-    const isIncome = kind === 'income';
-    const isTransfer = kind === 'transfer';
-    const pct = row.viewBudgeted > 0 ? (row.actual / row.viewBudgeted) * 100 : 0;
-    const rem = row.actual - row.viewBudgeted;
-    const over = pct > 100;
-    const warn = pct >= 80 && pct <= 100;
-    const barClass = isTransfer
-      ? (over ? 'bar-amber' : 'bar-green')
-      : isIncome
-        ? (pct >= 100 ? 'bar-green' : warn ? 'bar-amber' : 'bar-green')
-        : (over ? 'bar-red' : warn ? 'bar-amber' : 'bar-green');
-    const pctClass = isTransfer
-      ? (over ? 'pct-amber' : 'pct-green')
-      : isIncome
-        ? (pct >= 100 ? 'pct-green' : warn ? 'pct-amber' : 'pct-green')
-        : (over ? 'pct-red' : warn ? 'pct-amber' : 'pct-green');
-    const remClass = isTransfer
-      ? (rem > 0 ? 'pct-amber' : 'pct-green')
-      : isIncome
-        ? (rem >= 0 ? 'rem-positive' : 'rem-negative')
-        : (rem > 0 ? 'rem-negative' : 'rem-positive');
-    const barW = Math.min(pct, 100).toFixed(1);
+    const periods = row.periods || budgetRowCompareValues(row).periods;
     const rowAttrs = canWrite
       ? `class="txn-row" onclick="startBudgetEdit(${i}, '${prefix}')" title="Click to edit"`
       : 'class="txn-row"';
@@ -4312,15 +5578,8 @@
       : '';
     return `<tr ${rowAttrs}>
       <td style="font-weight:600">${escHtml(row.category)}</td>
-      ${hideKindColumn ? '' : `<td><span style="font-size:11px;color:var(--text-muted)">${categoryKindLabel(kind)}</span></td>`}
       <td><span style="font-size:11px;color:var(--text-muted)">${escHtml(formatBudgetTimeframeLabel(row.timeframe))}</span></td>
-      <td class="num">$${fmt(row.viewBudgeted)}</td>
-      <td class="num budget-actual-readonly">$${fmt(row.actual)}</td>
-      <td class="num ${remClass}">${rem < 0 ? '−' : ''}$${fmt(Math.abs(rem))}</td>
-      <td class="num ${pctClass}">${pct.toFixed(0)}%</td>
-      <td style="padding:9px 12px">
-        <div class="budget-bar-wrap"><div class="budget-bar-fill ${barClass}" style="width:${barW}%"></div></div>
-      </td>
+      ${renderBudgetPeriodCells(periods, kind)}
       <td class="actions-cell" onclick="event.stopPropagation()">
         ${deleteBtn}
       </td>
@@ -4328,36 +5587,29 @@
   }
 
   function renderBudgetNewEmptyRow(kind, rowOpts = {}) {
-    const { hideKindColumn = false, prefix = 'budget' } = rowOpts;
+    const { prefix = 'budget' } = rowOpts;
     const label = kind === 'income' ? 'New income category…' : 'New expense category…';
     return `<tr class="txn-row-new" onclick="startBudgetAdd('${kind}', '${prefix}')" title="Click to add a budget category">
       <td>${label}</td>
-      ${hideKindColumn ? '' : '<td>—</td>'}
       <td>—</td>
       <td class="num">—</td>
       <td class="num">—</td>
       <td class="num">—</td>
       <td class="num">—</td>
-      <td>—</td>
+      <td class="num">—</td>
+      <td class="num">—</td>
       <td></td>
     </tr>`;
   }
 
   function renderBudgetNewEditRow(kind, rowOpts = {}) {
-    const { hideKindColumn = false, lockKind = null } = rowOpts;
+    const { lockKind = null } = rowOpts;
     const fixedKind = lockKind || kind;
-    const kindField = hideKindColumn
-      ? `<input type="hidden" id="budget-inline-kind" value="${escAttr(fixedKind)}">`
-      : `<select class="txn-inline-input" id="budget-inline-kind">${budgetKindOptions(fixedKind)}</select>`;
+    const emptyPeriods = budgetComparePeriods.map(() => ({ budgeted: '', actual: 0, remaining: 0 }));
     return `<tr class="txn-row-editing">
-      <td><input class="txn-inline-input" id="budget-inline-cat" placeholder="Category name">${hideKindColumn ? kindField : ''}</td>
-      ${hideKindColumn ? '' : `<td>${kindField}</td>`}
-      <td><select class="txn-inline-input" id="budget-inline-timeframe">${budgetTimeframeOptions()}</select></td>
-      <td><input class="txn-inline-input num" type="number" step="0.01" min="0" id="budget-inline-budgeted" placeholder="0.00"></td>
-      <td class="num budget-actual-readonly">—</td>
-      <td class="num" style="color:var(--text-muted)">—</td>
-      <td class="num" style="color:var(--text-muted)">—</td>
-      <td></td>
+      <td><input class="txn-inline-input" id="budget-inline-cat" placeholder="Category name"><input type="hidden" id="budget-inline-kind" value="${escAttr(fixedKind)}"></td>
+      <td><select class="txn-inline-input" id="budget-inline-timeframe">${budgetTimeframeOptions(defaultBudgetCadence())}</select></td>
+      ${renderBudgetPeriodCells(emptyPeriods, kind, { editing: true, placeholder: true })}
       <td class="actions-cell">
         <div class="txn-inline-actions">
           <button class="txn-inline-btn save" onclick="saveBudgetNew()">Save</button>
@@ -4368,24 +5620,17 @@
   }
 
   function renderBudgetEditRow(row, i, kind, rowOpts = {}) {
-    const { hideKindColumn = false, lockKind = null } = rowOpts;
+    const { lockKind = null } = rowOpts;
     const fixedKind = lockKind || row.kind || kind;
     const canDelete = currentUserCanDelete();
-    const kindField = hideKindColumn
-      ? `<input type="hidden" id="budget-inline-kind" value="${escAttr(fixedKind)}">`
-      : `<select class="txn-inline-input" id="budget-inline-kind">${budgetKindOptions(row.kind || kind)}</select>`;
+    const periods = row.periods || budgetRowCompareValues(row).periods;
     const deleteBtn = canDelete
       ? `<button class="txn-inline-btn del" onclick="deleteBudget(${i})">Delete</button>`
       : '';
     return `<tr class="txn-row-editing">
-      <td><input class="txn-inline-input" id="budget-inline-cat" value="${escAttr(row.category)}">${hideKindColumn ? kindField : ''}</td>
-      ${hideKindColumn ? '' : `<td>${kindField}</td>`}
+      <td><input class="txn-inline-input" id="budget-inline-cat" value="${escAttr(row.category)}"><input type="hidden" id="budget-inline-kind" value="${escAttr(fixedKind)}"></td>
       <td><select class="txn-inline-input" id="budget-inline-timeframe">${budgetTimeframeOptions(row.timeframe)}</select></td>
-      <td><input class="txn-inline-input num" type="number" step="0.01" min="0" id="budget-inline-budgeted" value="${row.budgeted}"></td>
-      <td class="num budget-actual-readonly">$${fmt(row.actual)}</td>
-      <td class="num" style="color:var(--text-muted)">—</td>
-      <td class="num" style="color:var(--text-muted)">—</td>
-      <td></td>
+      ${renderBudgetPeriodCells(periods, kind, { editing: true })}
       <td class="actions-cell">
         <div class="txn-inline-actions">
           <button class="txn-inline-btn save" onclick="saveBudgetInline(${i})">Save</button>
@@ -4402,7 +5647,7 @@
   }
 
   function defaultTxnAccountOrder() {
-    const assets = [...assetData].sort((a, b) => Number(a.id) - Number(b.id));
+    const assets = assetData.filter(isTxnLedgerAccount).sort((a, b) => Number(a.id) - Number(b.id));
     const liabilities = [...liabilityData].sort((a, b) => Number(a.id) - Number(b.id));
     return [...assets, ...liabilities];
   }
@@ -4511,6 +5756,7 @@
     const accounts = getOrderedTxnAccounts();
     if (accounts.length === 0) {
       container.innerHTML = '<span class="txn-account-tabs-empty">No accounts</span>';
+      updateTxnCapMeter();
       return;
     }
     const canDrag = accounts.length > 1;
@@ -4518,6 +5764,7 @@
       `<button type="button" class="txn-account-tab${Number(a.id) === Number(txnAccountId) ? ' active' : ''}" data-account-id="${a.id}" draggable="${canDrag ? 'true' : 'false'}" onclick="setTxnAccount(${a.id})">${escHtml(accountTabLabel(a))}</button>`
     ).join('');
     bindTxnAccountTabDrag(container);
+    updateTxnCapMeter();
   }
 
   function syncTxnAccountId() {
@@ -6009,25 +7256,37 @@
     let year = today.getFullYear();
     let month = today.getMonth();
     let half = today.getDate() >= 16 ? 1 : 0;
+    const steps = Number(offset) || 0;
 
-    for (let i = 0; i < offset; i++) {
-      if (half === 0) {
-        month -= 1;
-        if (month < 0) { month = 11; year -= 1; }
-        half = 1;
-      } else {
-        half = 0;
+    if (steps > 0) {
+      for (let i = 0; i < steps; i++) {
+        if (half === 0) {
+          month -= 1;
+          if (month < 0) { month = 11; year -= 1; }
+          half = 1;
+        } else {
+          half = 0;
+        }
+      }
+    } else if (steps < 0) {
+      for (let i = 0; i < -steps; i++) {
+        if (half === 1) {
+          month += 1;
+          if (month > 11) { month = 0; year += 1; }
+          half = 0;
+        } else {
+          half = 1;
+        }
       }
     }
 
     const start = half === 0
       ? startOfDay(new Date(year, month, 1))
       : startOfDay(new Date(year, month, 16));
-    const end = offset === 0
-      ? endOfDay(new Date())
-      : (half === 0
-        ? endOfDay(new Date(year, month, 15))
-        : endOfDay(new Date(year, month + 1, 0)));
+    const periodEnd = half === 0
+      ? endOfDay(new Date(year, month, 15))
+      : endOfDay(new Date(year, month + 1, 0));
+    const end = steps === 0 ? endOfDay(new Date()) : periodEnd;
     return { start: timeToLocalIso(start), end: timeToLocalIso(end) };
   }
 
@@ -6177,15 +7436,6 @@
   }
 
   function syncAppPeriodUI() {
-    const selectEl = document.getElementById('budget-view-timeframe');
-    if (selectEl) selectEl.value = budgetViewTimeframe;
-
-    const budgetRangeEl = document.getElementById('budget-period-range');
-    if (budgetRangeEl) {
-      budgetRangeEl.textContent = getAppPeriodRangeLabel();
-      budgetRangeEl.hidden = appPeriodType === 'all';
-    }
-
     const isAll = appPeriodType === 'all';
     const triggerLabel = getAppPeriodTriggerLabel();
 
@@ -6195,7 +7445,7 @@
     const bsLabel = document.getElementById('bs-period-label');
     if (bsLabel) bsLabel.textContent = triggerLabel;
 
-    for (const id of ['txn-change-period-btn', 'bs-change-period-btn', 'budget-change-period-btn']) {
+    for (const id of ['txn-change-period-btn', 'bs-change-period-btn']) {
       const btn = document.getElementById(id);
       if (btn) btn.hidden = isAll;
     }
@@ -6436,6 +7686,7 @@
       html = txnDateSort === 'desc' ? newRowHtml + html : html + newRowHtml;
     }
     tbody.innerHTML = html;
+    updateTxnCapMeter();
     updateTxnDateSortIndicator();
     updateTxnPeriodRangeDisplay();
     if (txnEditingIdx === null) hideCategoryCombobox();
@@ -6497,7 +7748,10 @@
     }
   }
   async function buildBudget() {
-    budgetData = (await API.get('/api/budget')).filter(isBudgetCategoryRow);
+    budgetData = (await API.get('/api/budget')).filter(isBudgetCategoryRow).map(row => ({
+      ...row,
+      period_amounts: row.period_amounts || {},
+    }));
     renderBudget();
   }
   async function buildTransactions(options = {}) {
@@ -6668,7 +7922,22 @@
   });
 
   function assetFieldIds() {
-    return ['acct-routing', 'acct-account-num', 'acct-debit-card', 'acct-debit-exp', 'acct-debit-cvv'];
+    return [
+      'acct-routing', 'acct-account-num', 'acct-debit-card', 'acct-debit-exp', 'acct-debit-cvv',
+      'acct-property-type', 'acct-address-street', 'acct-address-city', 'acct-address-state', 'acct-address-zip',
+      'acct-ticker', 'acct-shares', 'acct-brokerage-account',
+    ];
+  }
+
+  function populateBrokerageAccountSelect(selectedId) {
+    const sel = document.getElementById('acct-brokerage-account');
+    if (!sel) return;
+    const options = assetData.filter(a => isBrokerageAccountType(a.type));
+    const current = selectedId ? Number(selectedId) : '';
+    sel.innerHTML = `<option value="">None — standalone holding</option>` +
+      options.map(a => `<option value="${a.id}"${Number(a.id) === current ? ' selected' : ''}>${escHtml(accountTabLabel(a))}</option>`).join('');
+    if (current && options.some(a => Number(a.id) === current)) sel.value = String(current);
+    else if (!current && options.length === 1) sel.value = String(options[0].id);
   }
 
   function formatDebitExpInput(value) {
@@ -6696,6 +7965,7 @@
     const isLiab = kind === 'liability';
     const isRealEstate = isRealEstateAssetType(type);
     const isTransportation = isTransportationAssetType(type);
+    const isHolding = isHoldingAssetType(type);
     const isValuedAsset = isValuedAssetType(type);
     const assetFields = document.getElementById('acct-asset-fields');
     const bankFields = document.getElementById('acct-bank-fields');
@@ -6709,29 +7979,35 @@
     const balLabel = document.getElementById('acct-bal-label');
     if (balLabel) {
       if (isLiab) balLabel.textContent = 'Outstanding Balance ($)';
+      else if (isHolding) balLabel.textContent = 'Current Worth ($)';
+      else if (isBrokerageAccountType(type)) balLabel.textContent = 'Available Cash ($)';
       else if (isValuedAsset) balLabel.textContent = 'Current Value ($)';
       else balLabel.textContent = 'Opening Balance ($)';
     }
 
     const basisLabel = document.getElementById('acct-basis-label');
-    if (basisLabel) basisLabel.textContent = 'Purchase Price ($)';
+    if (basisLabel) basisLabel.textContent = isHolding ? 'Cost Basis ($)' : 'Purchase Price ($)';
 
     if (instInput) {
       instInput.placeholder = isTransportation
         ? 'Optional — e.g. make or lender'
         : isRealEstate
           ? 'Optional — e.g. county or appraiser'
-          : 'e.g. JPMorgan Chase';
+          : isHolding
+            ? 'Optional — e.g. issuer'
+            : 'e.g. JPMorgan Chase';
     }
     if (nameInput) {
       nameInput.placeholder = isTransportation
         ? 'e.g. 2019 Honda Civic'
         : isRealEstate
           ? 'e.g. 123 Main St'
-          : 'e.g. Chase Checking';
+          : isHolding
+            ? 'e.g. Apple Inc.'
+            : 'e.g. Chase Checking';
     }
     if (openingDateLabel) {
-      openingDateLabel.textContent = isTransportation
+      openingDateLabel.textContent = isTransportation || isHolding
         ? 'Purchase Date'
         : isRealEstate
           ? 'Purchase / Closing Date'
@@ -6739,20 +8015,27 @@
     }
 
     if (last4Group) last4Group.style.display = isAsset ? 'none' : '';
-    if (assetFields) assetFields.style.display = isAsset && !isValuedAsset ? '' : 'none';
+    if (assetFields) assetFields.style.display = isAsset && !isValuedAsset && !isHolding ? '' : 'none';
+
+    const basisGroup = document.getElementById('acct-basis-group');
+    if (basisGroup) basisGroup.style.display = isAsset && assetUsesBasis(type) ? '' : 'none';
+    const propFields = document.getElementById('acct-property-fields');
+    if (propFields) propFields.style.display = isAsset && isRealEstate ? '' : 'none';
+    const holdingFields = document.getElementById('acct-holding-fields');
+    if (holdingFields) holdingFields.style.display = isAsset && isHolding ? '' : 'none';
+    const plaidSection = document.getElementById('acct-plaid-section');
+    if (plaidSection) plaidSection.style.display = isAsset && isHolding ? 'none' : '';
+    if (isAsset && isHolding) populateBrokerageAccountSelect(document.getElementById('acct-brokerage-account')?.value);
     if (!isAsset) return;
 
     const showBank = BANK_ASSET_TYPES.has(type);
-    const showBrokerageAccount = type === 'Brokerage';
+    const showBrokerageAccount = isBrokerageAccountType(type);
     if (bankFields) bankFields.style.display = showBank || showBrokerageAccount ? '' : 'none';
 
     const routingGroup = document.getElementById('acct-routing')?.closest('.form-group');
     if (routingGroup) routingGroup.style.display = showBank ? '' : 'none';
 
     if (debitFields) debitFields.style.display = type === 'Checking' ? '' : 'none';
-
-    const basisGroup = document.getElementById('acct-basis-group');
-    if (basisGroup) basisGroup.style.display = isAsset && assetUsesBasis(type) ? '' : 'none';
   }
 
   function readAssetAccountDetails(type) {
@@ -6762,6 +8045,14 @@
       debit_card_number: document.getElementById('acct-debit-card')?.value ?? '',
       debit_card_exp: document.getElementById('acct-debit-exp')?.value ?? '',
       debit_card_cvv: document.getElementById('acct-debit-cvv')?.value ?? '',
+      property_type: document.getElementById('acct-property-type')?.value ?? '',
+      address_street: document.getElementById('acct-address-street')?.value ?? '',
+      address_city: document.getElementById('acct-address-city')?.value ?? '',
+      address_state: document.getElementById('acct-address-state')?.value ?? '',
+      address_zip: document.getElementById('acct-address-zip')?.value ?? '',
+      ticker: document.getElementById('acct-ticker')?.value ?? '',
+      shares: document.getElementById('acct-shares')?.value ?? '',
+      brokerage_account_id: document.getElementById('acct-brokerage-account')?.value ?? '',
     };
   }
 
@@ -6770,7 +8061,19 @@
   }
 
   function validateAssetAccountDetails(type, details, { isEdit = false, existing = null } = {}) {
-    if (type === 'Real Estate' || type === 'Transportation') return null;
+    if (isRealEstateAssetType(type) || isTransportationAssetType(type)) return null;
+    if (isHoldingAssetType(type)) {
+      const sharesRaw = details.shares;
+      if (sharesRaw !== '' && sharesRaw != null) {
+        const n = Number(sharesRaw);
+        if (!Number.isFinite(n) || n < 0) return 'Shares cannot be negative.';
+      }
+      const linkId = Number(details.brokerage_account_id);
+      if (details.brokerage_account_id && (!Number.isInteger(linkId) || !assetData.some(a => isBrokerageAccountType(a.type) && Number(a.id) === linkId))) {
+        return 'Holdings must link to a Brokerage account.';
+      }
+      return null;
+    }
     const bankTypes = ['Checking', 'Savings', 'Money Market', 'CD'];
     const parsed = {
       routing_number: digitsOnly(details.routing_number) || null,
@@ -6826,24 +8129,66 @@
     return null;
   }
 
+  function resetAccountForm() {
+    [
+      'acct-name','acct-inst','acct-last4','acct-balance','acct-basis','acct-opening-date',
+      'acct-limit','acct-rate','acct-minpay', ...assetFieldIds(),
+    ].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.value = '';
+    });
+    const dbIdEl = document.getElementById('acct-db-id');
+    if (dbIdEl) dbIdEl.value = '';
+  }
+
+  function fillAccountFormFromRecord(r, isLiab) {
+    const dbIdEl = document.getElementById('acct-db-id');
+    if (dbIdEl) dbIdEl.value = String(r.id);
+    document.getElementById('acct-name').value    = r.name ?? '';
+    document.getElementById('acct-inst').value    = r.inst ?? '';
+    document.getElementById('acct-last4').value   = r.last4 ?? '';
+    document.getElementById('acct-type').value    = r.type;
+    document.getElementById('acct-balance').value = isLiab
+      ? r.balance
+      : (isValuedAssetType(r.type) || isHoldingAssetType(r.type) ? r.balance : (r.opening_balance ?? r.balance));
+    document.getElementById('acct-basis').value   = r.basis ?? '';
+    document.getElementById('acct-routing').value = r.routing_number ?? '';
+    document.getElementById('acct-account-num').value = r.account_number ?? '';
+    document.getElementById('acct-debit-card').value = r.debit_card_number ?? '';
+    document.getElementById('acct-debit-exp').value = r.debit_card_exp ?? '';
+    document.getElementById('acct-debit-cvv').value = r.debit_card_cvv ?? '';
+    document.getElementById('acct-property-type').value = r.property_type ?? '';
+    document.getElementById('acct-address-street').value = r.address_street ?? '';
+    document.getElementById('acct-address-city').value = r.address_city ?? '';
+    document.getElementById('acct-address-state').value = r.address_state ?? '';
+    document.getElementById('acct-address-zip').value = r.address_zip ?? '';
+    const tickerEl = document.getElementById('acct-ticker');
+    if (tickerEl) tickerEl.value = r.ticker ?? '';
+    const sharesEl = document.getElementById('acct-shares');
+    if (sharesEl) sharesEl.value = r.shares ?? '';
+    populateBrokerageAccountSelect(r.brokerage_account_id);
+    document.getElementById('acct-opening-date').value =
+      accountOpeningDateToIso(r.opening_date) || localTodayIso();
+    document.getElementById('acct-limit').value  = isLiab ? (r.lim  ?? '') : '';
+    document.getElementById('acct-rate').value   = isLiab ? (r.rate ?? '') : '';
+    document.getElementById('acct-minpay').value = isLiab ? (r.minpay ?? '') : '';
+  }
+
   function openAccountModal(kind, idx) {
     const isEdit = idx !== undefined;
     if (isEdit && !currentUserCanWrite()) return;
     if (!isEdit && !currentUserCanWrite()) return;
     bindAccountTypeFields();
+    resetAccountForm();
     const isLiab = kind === 'liability';
     document.getElementById('acct-kind').value = kind;
     document.getElementById('acct-edit-idx').value = isEdit ? idx : '';
     document.getElementById('modal-account-title').textContent =
       isEdit ? `Edit ${isLiab ? 'Liability' : 'Asset'}` : `Add ${isLiab ? 'Liability' : 'Asset'}`;
 
-    const typeEl = document.getElementById('acct-type');
     populateAccountTypeSelect(kind, isEdit ? (isLiab ? liabilityData : assetData)[idx]?.type : null);
 
     document.getElementById('acct-liability-fields').style.display = isLiab ? '' : 'none';
-
-    const dbIdEl = document.getElementById('acct-db-id');
-    if (dbIdEl) dbIdEl.value = '';
 
     if (isEdit) {
       const r = (isLiab ? liabilityData : assetData)[idx];
@@ -6851,32 +8196,8 @@
         alert('Account not found. Refresh the page and try again.');
         return;
       }
-      if (dbIdEl) dbIdEl.value = String(r.id);
-      document.getElementById('acct-name').value    = r.name;
-      document.getElementById('acct-inst').value    = r.inst;
-      document.getElementById('acct-last4').value   = r.last4;
-      typeEl.value = r.type;
-      document.getElementById('acct-balance').value = isLiab
-        ? r.balance
-        : (isValuedAssetType(r.type) ? r.balance : (r.opening_balance ?? r.balance));
-      document.getElementById('acct-basis').value   = r.basis ?? '';
-      document.getElementById('acct-routing').value = r.routing_number ?? '';
-      document.getElementById('acct-account-num').value = r.account_number ?? '';
-      document.getElementById('acct-debit-card').value = r.debit_card_number ?? '';
-      document.getElementById('acct-debit-exp').value = r.debit_card_exp ?? '';
-      document.getElementById('acct-debit-cvv').value = r.debit_card_cvv ?? '';
-      document.getElementById('acct-opening-date').value =
-        accountOpeningDateToIso(r.opening_date) || localTodayIso();
-      if (isLiab) {
-        document.getElementById('acct-limit').value  = r.lim  ?? '';
-        document.getElementById('acct-rate').value   = r.rate ?? '';
-        document.getElementById('acct-minpay').value = r.minpay ?? '';
-      }
+      fillAccountFormFromRecord(r, isLiab);
     } else {
-      ['acct-name','acct-inst','acct-last4','acct-balance','acct-basis','acct-opening-date',
-       'acct-limit','acct-rate','acct-minpay', ...assetFieldIds()].forEach(id => {
-        const el = document.getElementById(id); if (el) el.value = '';
-      });
       document.getElementById('acct-opening-date').value = localTodayIso();
     }
 
@@ -6892,6 +8213,11 @@
     const idxVal = document.getElementById('acct-edit-idx').value;
     const isEdit = idxVal !== '';
     const idx    = parseInt(idxVal);
+    const dbId   = Number(document.getElementById('acct-db-id')?.value);
+    const list   = isLiab ? liabilityData : assetData;
+    const existing = isEdit
+      ? (list.find(a => Number(a.id) === dbId) || list[idx] || null)
+      : null;
 
     const rec = {
       kind,
@@ -6912,14 +8238,14 @@
       const bv = document.getElementById('acct-basis').value;
       rec.basis = assetUsesBasis(rec.type) && bv !== '' ? parseFloat(bv) : null;
       Object.assign(rec, readAssetAccountDetails(rec.type));
-      const existing = isEdit ? assetData[idx] : null;
       const assetErr = validateAssetAccountDetails(rec.type, rec, { isEdit, existing });
       if (assetErr) { alert(assetErr); return; }
     }
 
     try {
       if (isEdit) {
-        const id = (isLiab ? liabilityData : assetData)[idx].id;
+        const id = existing?.id ?? dbId;
+        if (!id) { alert('Account not found. Refresh the page and try again.'); return; }
         await API.put(`/api/accounts/${id}`, rec);
       } else {
         await API.post('/api/accounts', rec);
@@ -7214,11 +8540,18 @@
   function readBudgetInlineRec() {
     const kindEl = document.getElementById('budget-inline-kind');
     const selectedKind = kindEl?.value ?? kindEl?.selectedOptions?.[0]?.value ?? budgetEditingKind;
+    const p0 = parseFloat(document.getElementById('budget-inline-budgeted-0')?.value) || 0;
+    const p1 = parseFloat(document.getElementById('budget-inline-budgeted-1')?.value) || 0;
+    const key0 = budgetPeriodKey(budgetComparePeriods[0]);
+    const key1 = budgetPeriodKey(budgetComparePeriods[1]);
+    const period_amounts = { [key0]: p0 };
+    if (key1 !== key0) period_amounts[key1] = p1;
     return {
       category:  document.getElementById('budget-inline-cat').value.trim(),
       kind: selectedKind === 'income' ? 'income' : 'expense',
       timeframe: document.getElementById('budget-inline-timeframe').value,
-      budgeted:  parseFloat(document.getElementById('budget-inline-budgeted').value) || 0,
+      budgeted:  p0,
+      period_amounts,
     };
   }
 
@@ -7974,6 +9307,14 @@
       const inserted = result?.inserted ?? 0;
       const dupes = result?.skippedDuplicates ?? 0;
       const invalid = result?.skippedInvalid ?? 0;
+      const skippedCap = result?.skippedCap ?? 0;
+      if (result?.demo_cap_reached || skippedCap > 0) {
+        const detail = inserted
+          ? `${inserted} transaction${inserted === 1 ? '' : 's'} imported. This demo is limited to ${DEMO_TXN_CAP} transactions per account.`
+          : '';
+        showDemoPurchaseModal({ detail });
+        return;
+      }
       const extra = [];
       if (dupes) extra.push(`${dupes} already imported`);
       if (invalid) extra.push(`${invalid} invalid`);
@@ -7982,8 +9323,23 @@
         : `${inserted} transaction${inserted === 1 ? '' : 's'} imported.`);
     } catch (e) {
       if (btn) btn.disabled = false;
+      if (handleDemoCapError(e)) return;
       alert(e.message);
     }
+  }
+
+  function startTxnCsvImport() {
+    if (!currentUserCanWrite()) { alert('You do not have permission to import transactions.'); return; }
+    syncTxnAccountId();
+    if (!txnAccountId) {
+      alert('Select an account before importing transactions.');
+      return;
+    }
+    if (isTxnCapReached()) {
+      showDemoPurchaseModal();
+      return;
+    }
+    document.getElementById('txn-csv-import-input').click();
   }
 
   function applyTransferFieldsToRec(rec) {
@@ -8117,18 +9473,27 @@
     if (!applyTransferFieldsToRec(rec)) return;
     if (!rec.name && readTxnCategoryKind() !== 'transfer') { alert('Transaction name is required.'); return; }
     try {
+      if (isTxnCapReached()) {
+        showDemoPurchaseModal();
+        return;
+      }
       await API.post('/api/transactions', rec);
       void playCashRegisterSound();
       expandTxnRangeToInclude(savedDate);
       rememberTxnNewDefaultDate(savedDate);
       await afterTxnMutation({ keepAdding: true, defaultDate: savedDate });
     } catch (e) {
+      if (handleDemoCapError(e)) return;
       alert(e.message);
     }
   }
 
   function startTxnAdd() {
     if (!currentUserCanWrite()) return;
+    if (isTxnCapReached()) {
+      showDemoPurchaseModal();
+      return;
+    }
     resetTxnInlineInit();
     txnEditingId = 'new';
     txnEditingIdx = 'new';
@@ -8202,6 +9567,7 @@
       expandTxnRangeToInclude(savedDate);
       await afterTxnMutation({ anchorId: t.id });
     } catch (e) {
+      if (handleDemoCapError(e)) return;
       alert(e.message);
     }
   }
@@ -8642,7 +10008,15 @@
   }
 
   async function applyPlaidSyncSideEffects(result) {
-    if (!result || result.error) return;
+    if (!result || (result.error && !result.demo_cap_reached)) return;
+    if (result.demo_cap_reached || result.code === 'DEMO_TXN_CAP') {
+      const added = result.added || 0;
+      showDemoPurchaseModal({
+        detail: added
+          ? `${added} transaction${added === 1 ? '' : 's'} synced. This demo is limited to ${DEMO_TXN_CAP} transactions per account.`
+          : '',
+      });
+    }
     const changed = (result.added || 0) + (result.modified || 0) + (result.removed || 0);
     if (changed > 0) {
       await afterTxnMutation();
@@ -8737,7 +10111,7 @@
       const result = await maybePlaidSyncAccount(accountId, { force: true, alertOnError: true });
       if (result) {
         renderPlaidAccountPanel({ ...plaidPanelStatus, ...result });
-        if (result.message) {
+        if (result.message && !result.demo_cap_reached) {
           const errEl = document.getElementById('acct-plaid-error');
           if (errEl) {
             errEl.hidden = false;
@@ -8797,6 +10171,7 @@
       }
       return result;
     } catch (e) {
+      if (handleDemoCapError(e)) return e.details || null;
       if (alertOnError) alert(e.message);
       return null;
     } finally {
@@ -8850,6 +10225,7 @@
     syncAppPeriodState();
   }
   syncAppPeriodUI();
+  syncBudgetPeriodUI();
 
   loadTxnDateSortPreference();
 
@@ -8867,6 +10243,152 @@
     showAuthScreen(false);
     setAuthError(e.message);
   });
+
+  /* ══════════════════════════════════════════════════════
+     IDLE TIMEOUT — isolated; sign out after no tab activity
+     Also logs off immediately on tab/window close (beacon).
+     Does not change retention (7-day purge) or the 50-cap.
+  ══════════════════════════════════════════════════════ */
+  (function setupIdleTimeout() {
+    const IDLE_TIMEOUT_MS = 5 * 60 * 1000; // 300000 ms — 5 minutes of inactivity
+    const IDLE_SIGNOUT_MESSAGE = 'Signed out after 5 minutes of inactivity.';
+    const IDLE_ACTIVITY_EVENTS = ['mousemove', 'mousedown', 'keydown', 'click', 'scroll', 'wheel', 'touchstart'];
+    const LOGOUT_BEACON_URL = apiUrl('/api/auth/logout');
+    let idleTimerId = null;
+    let idleSigningOut = false;
+    let skipUnloadLogoutUntil = 0;
+
+    function idleSessionActive() {
+      return !!currentUser && !document.body.classList.contains('auth-locked');
+    }
+
+    function stopIdleTimer() {
+      if (idleTimerId == null) return;
+      clearTimeout(idleTimerId);
+      idleTimerId = null;
+    }
+
+    function resetIdleTimer() {
+      stopIdleTimer();
+      if (idleSigningOut || !idleSessionActive()) return;
+      idleTimerId = setTimeout(signOutAfterIdle, IDLE_TIMEOUT_MS);
+    }
+
+    function noteIdleActivity() {
+      if (idleSigningOut || !idleSessionActive()) return;
+      resetIdleTimer();
+    }
+
+    function showIdleSignOutNotice() {
+      let el = document.getElementById('idle-signout-notice');
+      if (!el) {
+        el = document.createElement('p');
+        el.id = 'idle-signout-notice';
+        el.setAttribute('role', 'status');
+        el.style.cssText = 'margin:0 0 12px;font-size:12px;color:var(--amber);line-height:1.4;';
+        const form = document.getElementById('auth-form');
+        form?.parentNode?.insertBefore(el, form);
+      }
+      el.textContent = IDLE_SIGNOUT_MESSAGE;
+      el.hidden = false;
+    }
+
+    function hideIdleSignOutNotice() {
+      const el = document.getElementById('idle-signout-notice');
+      if (el) el.hidden = true;
+    }
+
+    async function signOutAfterIdle() {
+      if (idleSigningOut || !idleSessionActive()) return;
+      idleSigningOut = true;
+      stopIdleTimer();
+      try {
+        await logout();
+      } catch (_) {}
+      showIdleSignOutNotice();
+      idleSigningOut = false;
+    }
+
+    IDLE_ACTIVITY_EVENTS.forEach(type => {
+      document.addEventListener(type, noteIdleActivity, { capture: true, passive: true });
+    });
+
+    const originalApiRequest = apiRequest;
+    apiRequest = async function idleAwareApiRequest(url, options) {
+      const data = await originalApiRequest(url, options);
+      if (!String(url).includes('/api/auth/logout')) noteIdleActivity();
+      return data;
+    };
+
+    const originalShowAppShell = showAppShell;
+    showAppShell = function idleAwareShowAppShell(user) {
+      hideIdleSignOutNotice();
+      originalShowAppShell(user);
+      resetIdleTimer();
+    };
+
+    const originalShowAuthScreen = showAuthScreen;
+    showAuthScreen = function idleAwareShowAuthScreen(needsSetup) {
+      stopIdleTimer();
+      return originalShowAuthScreen(needsSetup);
+    };
+
+    function markInternalReload() {
+      skipUnloadLogoutUntil = Date.now() + 4000;
+    }
+
+    function beaconLogoutOnClose() {
+      if (Date.now() < skipUnloadLogoutUntil) return;
+      if (!currentUser) return;
+      stopIdleTimer();
+      let sent = false;
+      try {
+        if (typeof navigator.sendBeacon === 'function') {
+          const token = getSessionToken();
+          sent = navigator.sendBeacon(
+            LOGOUT_BEACON_URL,
+            new Blob(
+              [token ? JSON.stringify({ session_token: token }) : '{}'],
+              { type: 'application/json' }
+            )
+          );
+        }
+      } catch (_) {}
+      if (sent) return;
+      try {
+        const headers = { 'Content-Type': 'application/json' };
+        const token = getSessionToken();
+        if (token) headers.Authorization = 'Bearer ' + token;
+        fetch(LOGOUT_BEACON_URL, {
+          method: 'POST',
+          keepalive: true,
+          credentials: apiBase() ? 'include' : 'same-origin',
+          headers,
+          body: token ? JSON.stringify({ session_token: token }) : '{}',
+        });
+      } catch (_) {}
+    }
+
+    if (window.navigation && typeof navigation.addEventListener === 'function') {
+      navigation.addEventListener('navigate', event => {
+        if (event.navigationType === 'reload') markInternalReload();
+      });
+    }
+
+    window.addEventListener('keydown', event => {
+      if (event.key === 'F5') markInternalReload();
+      if ((event.ctrlKey || event.metaKey) && String(event.key).toLowerCase() === 'r') {
+        markInternalReload();
+      }
+    }, true);
+
+    window.addEventListener('pagehide', event => {
+      if (event.persisted) return;
+      beaconLogoutOnClose();
+    });
+
+    if (idleSessionActive()) resetIdleTimer();
+  })();
 </script>
 </body>
 </html>

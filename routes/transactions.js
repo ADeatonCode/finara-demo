@@ -30,6 +30,25 @@ const {
   importFingerprint,
   resolveImportCategory,
 } = require('../services/txnImport');
+const {
+  remainingTxnSlots,
+  demoCapPayload,
+  demoCapNotice,
+  assertCanAddTransactions,
+  assertNewAccountSlots,
+  isDemoCapError,
+} = require('../services/txnCap');
+
+function sendDemoCap(res, err) {
+  return res.status(err?.status || 409).json(err?.payload || demoCapPayload());
+}
+
+function transferAccountIds(existing) {
+  if (!existing?.transfer_group_id) return [existing?.account_id].filter(Boolean);
+  return db.prepare(
+    'SELECT DISTINCT account_id AS id FROM transactions WHERE transfer_group_id = ?'
+  ).all(existing.transfer_group_id).map(row => row.id);
+}
 
 function loadAccountForUser(req, accountId) {
   const id = Number(accountId);
@@ -136,6 +155,8 @@ router.post('/import', (req, res) => {
   let inserted = 0;
   let skippedDuplicates = 0;
   let skippedInvalid = 0;
+  let skippedCap = 0;
+  let remaining = remainingTxnSlots(loaded.acct.id);
 
   db.exec('BEGIN');
   try {
@@ -155,6 +176,11 @@ router.post('/import', (req, res) => {
       }
       seen.add(fp);
 
+      if (remaining <= 0) {
+        skippedCap++;
+        continue;
+      }
+
       const statusRaw = String(raw?.status ?? 'synced').trim().toLowerCase();
       const status = statusRaw === 'pending' ? 'pending' : 'synced';
       insert.run(
@@ -168,6 +194,7 @@ router.post('/import', (req, res) => {
         loaded.acct.id,
       );
       inserted++;
+      remaining--;
     }
     db.exec('COMMIT');
   } catch (e) {
@@ -180,7 +207,11 @@ router.post('/import', (req, res) => {
     syncAccountOpeningBalance(loaded.acct.id);
   }
 
-  res.json({ inserted, skippedDuplicates, skippedInvalid });
+  const payload = { inserted, skippedDuplicates, skippedInvalid, skippedCap };
+  if (skippedCap > 0) {
+    Object.assign(payload, demoCapNotice(loaded.acct.id));
+  }
+  res.json(payload);
 });
 
 /* GET /api/transactions?account_id=1 */
@@ -214,15 +245,25 @@ router.post('/', (req, res) => {
     try {
       const payload = transferPayloadFromRequest(req.body);
       if (payload.error) return res.status(400).json({ error: payload.error });
+      assertCanAddTransactions(payload.fromAccountId, 1);
+      assertCanAddTransactions(payload.toAccountId, 1);
       const result = createTransferPair(payload);
       return res.status(201).json(result);
     } catch (e) {
+      if (isDemoCapError(e)) return sendDemoCap(res, e);
       return res.status(400).json({ error: e.message });
     }
   }
 
   if (resolveTxnKind(req.body, cat) === 'transfer') {
     return res.status(400).json({ error: 'Select the other account for this transfer.' });
+  }
+
+  try {
+    assertCanAddTransactions(account_id, 1);
+  } catch (e) {
+    if (isDemoCapError(e)) return sendDemoCap(res, e);
+    return res.status(400).json({ error: e.message });
   }
 
   const amount = amt || 0;
@@ -256,6 +297,10 @@ router.put('/:id', (req, res) => {
     try {
       const payload = transferPayloadFromRequest(req.body, existing);
       if (payload.error) return res.status(400).json({ error: payload.error });
+      assertNewAccountSlots(
+        [payload.fromAccountId, payload.toAccountId],
+        transferAccountIds(existing),
+      );
       if (wasTransfer) {
         updateTransferPair(existing.id, payload);
         return res.json({ ok: true, transfer_group_id: existing.transfer_group_id });
@@ -265,6 +310,7 @@ router.put('/:id', (req, res) => {
       const result = createTransferPair(payload);
       return res.json({ ok: true, ...result });
     } catch (e) {
+      if (isDemoCapError(e)) return sendDemoCap(res, e);
       return res.status(400).json({ error: e.message });
     }
   }
@@ -275,6 +321,7 @@ router.put('/:id', (req, res) => {
 
   if (wasTransfer) {
     try {
+      assertNewAccountSlots([account_id], transferAccountIds(existing));
       const result = convertTransferToSingle(existing.id, {
         date: date || '',
         time: normalizeTxnTime(time),
@@ -287,8 +334,16 @@ router.put('/:id', (req, res) => {
       });
       return res.json({ ok: true, id: result.id });
     } catch (e) {
+      if (isDemoCapError(e)) return sendDemoCap(res, e);
       return res.status(400).json({ error: e.message });
     }
+  }
+
+  try {
+    assertNewAccountSlots([account_id], [existing.account_id]);
+  } catch (e) {
+    if (isDemoCapError(e)) return sendDemoCap(res, e);
+    return res.status(400).json({ error: e.message });
   }
 
   const amount = amt || 0;

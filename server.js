@@ -12,8 +12,60 @@ loadEnv();
 const { requireAuth, requireDataPermission } = require('./auth');
 require('./database');
 const { startRetentionSweep, RETENTION_NOTICE } = require('./services/retention');
+const { logNotifyConfig } = require('./services/notify');
 
 const app = express();
+
+function hostOf(value) {
+  try { return new URL(value).hostname; } catch (_) { return ''; }
+}
+
+function isInfinityFreeOrigin(origin) {
+  const host = hostOf(origin);
+  return (
+    host.endsWith('infinityfreeapp.com') ||
+    host.endsWith('infinityfree.com') ||
+    host.endsWith('epizy.com')
+  );
+}
+
+function isLocalOrigin(origin) {
+  const host = hostOf(origin);
+  return host === 'localhost' || host === '127.0.0.1';
+}
+
+// Same split as Project TODO: InfinityFree hosts the static page, Render hosts Express.
+// FRONTEND_ORIGIN = the Lagoon site origin (no trailing slash). If unset, CORS stays open.
+app.use((req, res, next) => {
+  const requestOrigin = req.headers.origin || '';
+  const configured = String(process.env.FRONTEND_ORIGIN || '').replace(/\/+$/, '');
+
+  let allowOrigin = '';
+  if (!configured) {
+    allowOrigin = requestOrigin || '*';
+  } else if (!requestOrigin) {
+    allowOrigin = configured;
+  } else if (
+    requestOrigin === configured ||
+    isInfinityFreeOrigin(requestOrigin) ||
+    isLocalOrigin(requestOrigin)
+  ) {
+    allowOrigin = requestOrigin;
+  }
+
+  if (allowOrigin) {
+    res.setHeader('Access-Control-Allow-Origin', allowOrigin);
+    if (allowOrigin !== '*') {
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+      res.setHeader('Vary', 'Origin');
+    }
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  }
+
+  if (req.method === 'OPTIONS') return res.status(204).end();
+  next();
+});
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public'), {
@@ -44,5 +96,6 @@ const HOST = process.env.HOST || '0.0.0.0';
 app.listen(PORT, HOST, () => {
   console.log(`Finara Demo running at http://localhost:${PORT}`);
   console.log(RETENTION_NOTICE);
+  logNotifyConfig();
   startRetentionSweep();
 });

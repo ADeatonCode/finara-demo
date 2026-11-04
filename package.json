@@ -12,6 +12,7 @@
     "dev": "node --experimental-sqlite --watch server.js"
   },
   "dependencies": {
-    "express": "^4.22.2"
+    "express": "^4.22.2",
+    "nodemailer": "^10.3.1"
   }
 }

@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: finara-demo
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: FRONTEND_ORIGIN
+        sync: false
+      - key: NOTIFY_EMAIL
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false

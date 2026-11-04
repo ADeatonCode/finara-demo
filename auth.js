@@ -349,21 +349,37 @@ function getSessionUser(token) {
   return mapUserRow(row);
 }
 
-function getUserFromRequest(req) {
+function getSessionTokenFromRequest(req) {
   const cookies = parseCookies(req);
-  return getSessionUser(cookies[SESSION_COOKIE]);
+  if (cookies[SESSION_COOKIE]) return cookies[SESSION_COOKIE];
+  const auth = String(req.headers.authorization || '');
+  const bearer = auth.match(/^Bearer\s+(\S+)/i);
+  if (bearer) return bearer[1];
+  if (req.body && req.body.session_token) return String(req.body.session_token);
+  return null;
+}
+
+function getUserFromRequest(req) {
+  return getSessionUser(getSessionTokenFromRequest(req));
+}
+
+function cookieFlags() {
+  // Cross-site cookies (InfinityFree page → Render API) need Secure + SameSite=None.
+  // Local same-origin keeps Lax so http://localhost:3001 still works.
+  if (process.env.FRONTEND_ORIGIN) return 'HttpOnly; Secure; SameSite=None; Path=/';
+  return 'HttpOnly; SameSite=Lax; Path=/';
 }
 
 function setSessionCookie(res, token) {
   const maxAge = Math.floor(SESSION_MS / 1000);
   res.setHeader(
     'Set-Cookie',
-    `${SESSION_COOKIE}=${encodeURIComponent(token)}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${maxAge}`,
+    `${SESSION_COOKIE}=${encodeURIComponent(token)}; ${cookieFlags()}; Max-Age=${maxAge}`,
   );
 }
 
 function clearSessionCookie(res) {
-  res.setHeader('Set-Cookie', `${SESSION_COOKIE}=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0`);
+  res.setHeader('Set-Cookie', `${SESSION_COOKIE}=; ${cookieFlags()}; Max-Age=0`);
 }
 
 function initialsForName(name) {
@@ -424,6 +440,7 @@ module.exports = {
   verifyPassword,
   createSession,
   deleteSession,
+  getSessionTokenFromRequest,
   getUserFromRequest,
   setSessionCookie,
   clearSessionCookie,

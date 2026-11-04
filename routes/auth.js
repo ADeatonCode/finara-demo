@@ -12,17 +12,18 @@ const {
   createSession,
   deleteSession,
   getUserFromRequest,
+  getSessionTokenFromRequest,
   setSessionCookie,
   clearSessionCookie,
-  parseCookies,
-  SESSION_COOKIE,
   getPrimaryUserId,
 } = require('../auth');
-const { RETENTION_DAYS, RETENTION_NOTICE } = require('../services/retention');
+const { RETENTION_DAYS, RETENTION_NOTICE, PRIVACY_NOTICE } = require('../services/retention');
+const { assertNotifyPayload, sendLaunchNotify } = require('../services/notify');
 
 const DEMO_META = {
   demo: true,
   notice: RETENTION_NOTICE,
+  privacy_notice: PRIVACY_NOTICE,
   retention_days: RETENTION_DAYS,
 };
 
@@ -37,37 +38,51 @@ router.get('/status', (req, res) => {
   });
 });
 
-router.post('/register', (req, res) => {
-  const { username, display_name, password } = req.body;
+async function registerDemoUser(req, res) {
+  const { username, display_name, password, email, notify_when_available } = req.body;
   try {
+    const notifyEmail = assertNotifyPayload({
+      email,
+      notifyWhenAvailable: notify_when_available,
+    });
     const user = createUser({
       username,
       displayName: display_name,
       password,
     });
+    let notify_requested = false;
+    let notify_sent = false;
+    if (notifyEmail) {
+      notify_requested = true;
+      try {
+        const result = await sendLaunchNotify({
+          email: notifyEmail,
+          username: user.username,
+        });
+        notify_sent = !!result.sent;
+      } catch (err) {
+        console.error('Launch notify failed.');
+        notify_sent = false;
+      }
+    }
     const token = createSession(user.id);
     setSessionCookie(res, token);
-    res.status(201).json({ user, primary_user_id: getPrimaryUserId(), ...DEMO_META });
+    res.status(201).json({
+      user,
+      session_token: token,
+      primary_user_id: getPrimaryUserId(),
+      notify_requested,
+      notify_sent,
+      ...DEMO_META,
+    });
   } catch (e) {
     res.status(400).json({ error: e.message });
   }
-});
+}
 
-router.post('/setup', (req, res) => {
-  const { username, display_name, password } = req.body;
-  try {
-    const user = createUser({
-      username,
-      displayName: display_name,
-      password,
-    });
-    const token = createSession(user.id);
-    setSessionCookie(res, token);
-    res.status(201).json({ user, primary_user_id: getPrimaryUserId(), ...DEMO_META });
-  } catch (e) {
-    res.status(400).json({ error: e.message });
-  }
-});
+router.post('/register', registerDemoUser);
+
+router.post('/setup', registerDemoUser);
 
 router.post('/login', (req, res) => {
   const { username, password } = req.body;
@@ -78,12 +93,16 @@ router.post('/login', (req, res) => {
 
   const token = createSession(user.id);
   setSessionCookie(res, token);
-  res.json({ user: findUserById(user.id), primary_user_id: getPrimaryUserId(), ...DEMO_META });
+  res.json({
+    user: findUserById(user.id),
+    session_token: token,
+    primary_user_id: getPrimaryUserId(),
+    ...DEMO_META,
+  });
 });
 
 router.post('/logout', (req, res) => {
-  const cookies = parseCookies(req);
-  deleteSession(cookies[SESSION_COOKIE]);
+  deleteSession(getSessionTokenFromRequest(req));
   clearSessionCookie(res);
   res.json({ ok: true });
 });

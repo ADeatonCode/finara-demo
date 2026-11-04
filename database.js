@@ -19,6 +19,7 @@ const db = new DatabaseSync(DB_PATH);
 // Performance pragmas
 db.exec(`PRAGMA journal_mode = WAL`);
 db.exec(`PRAGMA foreign_keys = ON`);
+try { db.exec('DROP TABLE IF EXISTS waitlist'); } catch (_) {}
 
 /* ══════════════════════════════════════════════════════
    SCHEMA — tables that hold your saved data
@@ -53,6 +54,11 @@ db.exec(`
     synced     TEXT NOT NULL DEFAULT 'Just now',
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
     opening_date TEXT,
+    property_type TEXT,
+    address_street TEXT,
+    address_city TEXT,
+    address_state TEXT,
+    address_zip TEXT,
     portfolio_id INTEGER REFERENCES portfolios(id)
   );
 
@@ -80,6 +86,14 @@ db.exec(`
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
     portfolio_id INTEGER REFERENCES portfolios(id),
     UNIQUE(portfolio_id, category)
+  );
+
+  CREATE TABLE IF NOT EXISTS budget_period_amounts (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    category_id INTEGER NOT NULL REFERENCES budget_categories(id) ON DELETE CASCADE,
+    period_key  TEXT NOT NULL,
+    budgeted    REAL NOT NULL DEFAULT 0,
+    UNIQUE(category_id, period_key)
   );
 
   CREATE TABLE IF NOT EXISTS credit_bureaus (
@@ -141,6 +155,9 @@ db.exec(`
 
   CREATE INDEX IF NOT EXISTS idx_user_txn_tab_order_user
     ON user_txn_tab_order(user_id, position);
+
+  CREATE INDEX IF NOT EXISTS idx_budget_period_amounts_category
+    ON budget_period_amounts(category_id);
 `);
 
 // Migrate existing DBs: ensure portfolios and portfolio links exist and assign existing data
@@ -314,7 +331,7 @@ if (!hasInitialSeedDone()) {
 ensureCreditBureauRows();
 
 const DEFAULT_ACCOUNT_TYPES = {
-  asset: ['Checking', 'Savings', 'Brokerage', 'Real Estate', 'Transportation', 'CD', 'Money Market'],
+  asset: ['Checking', 'Savings', 'Brokerage', 'Real Estate', 'Transportation', 'CD', 'Money Market', 'Stock', 'ETF', 'Mutual fund', 'Bond', 'Other'],
   liability: ['Credit', 'Loan', 'Mortgage', 'Line of Credit'],
 };
 
@@ -386,6 +403,25 @@ for (const col of [
 if (!acctCols.some(c => c.name === 'opening_date')) {
   db.exec('ALTER TABLE accounts ADD COLUMN opening_date TEXT');
   db.exec("UPDATE accounts SET opening_date = date(created_at) WHERE opening_date IS NULL OR opening_date = ''");
+}
+
+{
+  const propertyCols = db.prepare('PRAGMA table_info(accounts)').all();
+  for (const col of [
+    'property_type TEXT',
+    'address_street TEXT',
+    'address_city TEXT',
+    'address_state TEXT',
+    'address_zip TEXT',
+    'ticker TEXT',
+    'shares REAL',
+    'brokerage_account_id INTEGER',
+  ]) {
+    const name = col.split(' ')[0];
+    if (!propertyCols.some(c => c.name === name)) {
+      db.exec(`ALTER TABLE accounts ADD COLUMN ${col}`);
+    }
+  }
 }
 
 const budgetCols = db.prepare('PRAGMA table_info(budget_categories)').all();
@@ -530,6 +566,7 @@ function reconcileOpeningDateWithTransactions(accountId) {
 function syncAccountOpeningBalance(accountId) {
   const acct = reconcileOpeningDateWithTransactions(accountId);
   if (!acct) return;
+  if (acct.kind === 'asset' && isHoldingAssetType(acct.type)) return;
 
   const openingDate = acct.opening_date
     ? formatDisplayDate(acct.opening_date)
@@ -601,12 +638,20 @@ function recalcAccountBalance(accountId) {
 }
 
 function isValuedAssetType(type) {
-  return type === 'Real Estate' || type === 'Transportation';
+  return type === 'Real Estate' || type === 'Property' || type === 'Transportation';
+}
+
+function isHoldingAssetType(type) {
+  return type === 'Stock' || type === 'ETF' || type === 'Mutual fund' || type === 'Bond' || type === 'Other';
+}
+
+function isBrokerageAccountType(type) {
+  return type === 'Brokerage' || type === 'Investment';
 }
 
 function applyOpeningBalanceUpdate(accountId, openingBalance) {
   const acct = db.prepare('SELECT * FROM accounts WHERE id = ?').get(accountId);
-  if (!acct || acct.kind !== 'asset' || isValuedAssetType(acct.type)) return;
+  if (!acct || acct.kind !== 'asset' || isValuedAssetType(acct.type) || isHoldingAssetType(acct.type)) return;
 
   const amount = Number(openingBalance);
   if (!Number.isFinite(amount)) return;
@@ -657,6 +702,15 @@ function applyRealEstateValueUpdate(accountId, targetBalance) {
     VALUES (?, ?, '12:00', 'Value Update', ?, ?, ?, 0, 'synced', 0)
   `).run(accountId, dateStr, desc, acct.type, delta);
   recalcAccountBalance(accountId);
+}
+
+function applyHoldingValueUpdate(accountId, targetBalance) {
+  const acct = db.prepare('SELECT id, kind, type FROM accounts WHERE id = ?').get(accountId);
+  if (!acct || acct.kind !== 'asset' || !isHoldingAssetType(acct.type)) return;
+
+  const target = Number(targetBalance);
+  if (!Number.isFinite(target)) return;
+  db.prepare('UPDATE accounts SET balance = ? WHERE id = ?').run(target, accountId);
 }
 
 for (const acct of db.prepare('SELECT * FROM accounts').all()) {
@@ -1071,6 +1125,9 @@ module.exports.syncAccountOpeningBalance = syncAccountOpeningBalance;
 module.exports.applyOpeningBalanceUpdate = applyOpeningBalanceUpdate;
 module.exports.applyAccountBalanceTarget = applyAccountBalanceTarget;
 module.exports.applyRealEstateValueUpdate = applyRealEstateValueUpdate;
+module.exports.applyHoldingValueUpdate = applyHoldingValueUpdate;
+module.exports.isHoldingAssetType = isHoldingAssetType;
+module.exports.isBrokerageAccountType = isBrokerageAccountType;
 module.exports.reconcileOpeningDateWithTransactions = reconcileOpeningDateWithTransactions;
 module.exports.getCategoryKind = getCategoryKind;
 module.exports.normalizeCategoryKind = normalizeCategoryKind;

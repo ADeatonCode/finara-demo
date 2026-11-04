@@ -6,7 +6,8 @@ const router = express.Router();
 const db = require('../database');
 const { getHomePortfolioId, clearPortfolioData } = require('../database');
 const { seedSampleHousehold } = require('../services/demoSeed');
-const { RETENTION_DAYS, RETENTION_NOTICE } = require('../services/retention');
+const { RETENTION_DAYS, RETENTION_NOTICE, PRIVACY_NOTICE } = require('../services/retention');
+const { TXN_CAP, PURCHASE_EMAIL, PURCHASE_MESSAGE } = require('../services/txnCap');
 
 function homePortfolio(req) {
   const fromUser = req.user.portfolios?.find(p => p.role === 'admin') || req.user.portfolios?.[0];
@@ -18,8 +19,13 @@ router.get('/info', (req, res) => {
   res.json({
     demo: true,
     notice: RETENTION_NOTICE,
+    privacy_notice: PRIVACY_NOTICE,
     retention_days: RETENTION_DAYS,
-    retention_rule: 'Each signup and its accounts, budgets, and transactions are deleted 7 days after signup.',
+    retention_rule: 'Each signup and its accounts, budgets, and transactions are deleted 7 days after signup. Visitor emails are not stored.',
+    txn_cap: TXN_CAP,
+    txn_cap_per_account: TXN_CAP,
+    purchase_email: PURCHASE_EMAIL,
+    purchase_message: PURCHASE_MESSAGE,
   });
 });
 

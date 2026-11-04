@@ -4,11 +4,14 @@
  * Rule: a signup and all of that visitor's demo data are deleted 7 days after
  * the account was created (created_at). Runs on server start and every hour.
  * Only touches this demo database (finara-demo.db), never the real Finara folder.
+ *
+ * Visitor emails are never stored. Opt-in is a one-time message to Alan.
  */
 const db = require('../database');
 
 const RETENTION_DAYS = 7;
 const RETENTION_NOTICE = 'This is a demo of the real product only. Data is kept for 7 days.';
+const PRIVACY_NOTICE = 'We do not keep your email on this demo server. If you opt in, a one-time notice goes to Alan.';
 
 function listExpiredUserIds() {
   return db.prepare(`
@@ -92,6 +95,7 @@ function startRetentionSweep() {
 module.exports = {
   RETENTION_DAYS,
   RETENTION_NOTICE,
+  PRIVACY_NOTICE,
   deleteUserSandbox,
   purgeExpiredDemoUsers,
   startRetentionSweep,

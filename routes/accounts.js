@@ -11,11 +11,87 @@
 const express = require('express');
 const router  = express.Router();
 const db      = require('../database');
-const { syncAccountOpeningBalance, applyRealEstateValueUpdate, applyOpeningBalanceUpdate, applyAccountBalanceTarget, getHomePortfolioId } = require('../database');
+const { syncAccountOpeningBalance, applyRealEstateValueUpdate, applyHoldingValueUpdate, applyOpeningBalanceUpdate, applyAccountBalanceTarget, getHomePortfolioId } = require('../database');
 const { attachPlaidPublicFields, disconnectAccount } = require('../services/plaidSync');
+
+const PROPERTY_TYPES = [
+  'Primary residence',
+  'Vacation/second home',
+  'Rental/investment',
+  'Land',
+  'Commercial',
+  'Other',
+];
 
 function digitsOnly(value) {
   return String(value ?? '').replace(/\D/g, '');
+}
+
+function emptyToNull(value) {
+  const s = String(value ?? '').trim();
+  return s || null;
+}
+
+function emptyPropertyDetails() {
+  return {
+    property_type: null,
+    address_street: null,
+    address_city: null,
+    address_state: null,
+    address_zip: null,
+  };
+}
+
+function parsePropertyDetails(body) {
+  const rawType = emptyToNull(body.property_type);
+  return {
+    property_type: !rawType ? null : (PROPERTY_TYPES.includes(rawType) ? rawType : 'Other'),
+    address_street: emptyToNull(body.address_street),
+    address_city: emptyToNull(body.address_city),
+    address_state: emptyToNull(body.address_state),
+    address_zip: emptyToNull(body.address_zip),
+  };
+}
+
+function isRealEstateAssetType(type) {
+  return type === 'Real Estate' || type === 'Property';
+}
+
+function isHoldingAssetType(type) {
+  return type === 'Stock' || type === 'ETF' || type === 'Mutual fund' || type === 'Bond' || type === 'Other';
+}
+
+function isBrokerageAccountType(type) {
+  return type === 'Brokerage' || type === 'Investment';
+}
+
+function emptyHoldingDetails() {
+  return { ticker: null, shares: null, brokerage_account_id: null };
+}
+
+function parseHoldingDetails(body) {
+  const ticker = emptyToNull(body.ticker);
+  const sharesRaw = body.shares;
+  let shares = null;
+  if (sharesRaw !== '' && sharesRaw != null) {
+    const n = Number(sharesRaw);
+    shares = Number.isFinite(n) ? n : null;
+  }
+  const brokerageId = Number(body.brokerage_account_id);
+  return {
+    ticker: ticker ? ticker.toUpperCase() : null,
+    shares,
+    brokerage_account_id: Number.isInteger(brokerageId) && brokerageId > 0 ? brokerageId : null,
+  };
+}
+
+function resolveBrokerageLink(id) {
+  if (id == null) return { ok: true, id: null };
+  const acct = db.prepare('SELECT id, kind, type FROM accounts WHERE id = ?').get(id);
+  if (!acct || acct.kind !== 'asset' || !isBrokerageAccountType(acct.type)) {
+    return { ok: false, error: 'Holdings must link to a Brokerage account.' };
+  }
+  return { ok: true, id: acct.id };
 }
 
 function parseAssetDetails(body, type) {
@@ -25,6 +101,8 @@ function parseAssetDetails(body, type) {
     debit_card_number: null,
     debit_card_exp: null,
     debit_card_cvv: null,
+    ...emptyPropertyDetails(),
+    ...emptyHoldingDetails(),
   };
   if (!type) return details;
 
@@ -41,12 +119,27 @@ function parseAssetDetails(body, type) {
     details.debit_card_cvv = digitsOnly(body.debit_card_cvv) || null;
   }
 
+  if (isRealEstateAssetType(type)) {
+    Object.assign(details, parsePropertyDetails(body));
+  }
+
+  if (isHoldingAssetType(type)) {
+    Object.assign(details, parseHoldingDetails(body));
+  }
+
   return details;
 }
 
 function validateAssetDetails(kind, type, details, opts = {}) {
   if (kind !== 'asset') return null;
-  if (type === 'Real Estate' || type === 'Transportation') return null;
+  if (isRealEstateAssetType(type) || type === 'Transportation') return null;
+  if (isHoldingAssetType(type)) {
+    if (details.shares != null && details.shares < 0) return 'Shares cannot be negative.';
+    const link = resolveBrokerageLink(details.brokerage_account_id);
+    if (!link.ok) return link.error;
+    details.brokerage_account_id = link.id;
+    return null;
+  }
 
   const { isEdit = false, existing = null, parsed = null } = opts;
   const hasStoredDetails = existing && (
@@ -111,6 +204,8 @@ function mergeAssetDetailsForUpdate(existing, parsed, type) {
     debit_card_number: keepDetailValue(parsed.debit_card_number, existing.debit_card_number),
     debit_card_exp: keepDetailValue(parsed.debit_card_exp, existing.debit_card_exp),
     debit_card_cvv: keepDetailValue(parsed.debit_card_cvv, existing.debit_card_cvv),
+    ...emptyPropertyDetails(),
+    ...emptyHoldingDetails(),
   };
 
   if (type === 'Brokerage') {
@@ -118,7 +213,7 @@ function mergeAssetDetailsForUpdate(existing, parsed, type) {
     merged.debit_card_number = null;
     merged.debit_card_exp = null;
     merged.debit_card_cvv = null;
-  } else if (type === 'Real Estate' || type === 'Transportation') {
+  } else if (isHoldingAssetType(type) || isRealEstateAssetType(type) || type === 'Transportation') {
     merged.routing_number = null;
     merged.account_number = null;
     merged.debit_card_number = null;
@@ -130,20 +225,36 @@ function mergeAssetDetailsForUpdate(existing, parsed, type) {
     merged.debit_card_cvv = null;
   }
 
-  if (!['Checking', 'Savings', 'Money Market', 'CD', 'Brokerage'].includes(type)) {
+  // Only clear bank numbers for property/vehicle/holdings. Leave other
+  // sibling-added types alone so their own details are not wiped.
+  if (isRealEstateAssetType(type) || type === 'Transportation' || isHoldingAssetType(type)) {
     merged.routing_number = null;
     merged.account_number = null;
+  }
+
+  if (isRealEstateAssetType(type)) {
+    merged.property_type = parsed.property_type;
+    merged.address_street = parsed.address_street;
+    merged.address_city = parsed.address_city;
+    merged.address_state = parsed.address_state;
+    merged.address_zip = parsed.address_zip;
+  }
+
+  if (isHoldingAssetType(type)) {
+    merged.ticker = parsed.ticker;
+    merged.shares = parsed.shares;
+    merged.brokerage_account_id = parsed.brokerage_account_id;
   }
 
   return merged;
 }
 
 function assetUsesBasis(type) {
-  return type === 'Real Estate' || type === 'Transportation';
+  return isRealEstateAssetType(type) || type === 'Transportation' || isHoldingAssetType(type);
 }
 
 function isValuedAssetType(type) {
-  return type === 'Real Estate' || type === 'Transportation';
+  return isRealEstateAssetType(type) || type === 'Transportation';
 }
 
 function deriveLast4(last4, accountNumber) {
@@ -218,18 +329,23 @@ router.post('/', (req, res) => {
   const result = db.prepare(`
     INSERT INTO accounts (
       kind,name,inst,last4,type,balance,opening_balance,basis,lim,rate,minpay,synced,opening_date,
-      routing_number,account_number,debit_card_number,debit_card_exp,debit_card_cvv,portfolio_id
-    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+      routing_number,account_number,debit_card_number,debit_card_exp,debit_card_cvv,
+      property_type,address_street,address_city,address_state,address_zip,
+      ticker,shares,brokerage_account_id,portfolio_id
+    ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
   `).run(
     kind, name, inst || '', storedLast4, type, openingBalance, openingBalance,
     storedBasis, lim ?? null, rate ?? null, minpay ?? null, 'Just now', storedOpeningDate,
     assetDetails.routing_number, assetDetails.account_number,
     assetDetails.debit_card_number, assetDetails.debit_card_exp, assetDetails.debit_card_cvv,
+    assetDetails.property_type, assetDetails.address_street, assetDetails.address_city,
+    assetDetails.address_state, assetDetails.address_zip,
+    assetDetails.ticker, assetDetails.shares, assetDetails.brokerage_account_id,
     portfolio_id,
   );
 
   const acct = db.prepare('SELECT * FROM accounts WHERE id = ?').get(result.lastInsertRowid);
-  syncAccountOpeningBalance(result.lastInsertRowid);
+  if (!isHoldingAssetType(type)) syncAccountOpeningBalance(result.lastInsertRowid);
   const saved = db.prepare('SELECT * FROM accounts WHERE id = ?').get(result.lastInsertRowid);
   res.status(201).json(attachPlaidPublicFields([saved])[0]);
 });
@@ -252,6 +368,8 @@ router.put('/:id', (req, res) => {
       debit_card_number: null,
       debit_card_exp: null,
       debit_card_cvv: null,
+      ...emptyPropertyDetails(),
+      ...emptyHoldingDetails(),
     };
   const assetErr = existing.kind === 'asset'
     ? validateAssetDetails(existing.kind, type, details, { isEdit: true, existing, parsed })
@@ -270,25 +388,32 @@ router.put('/:id', (req, res) => {
   db.prepare(`
     UPDATE accounts SET
       name=?, inst=?, last4=?, type=?, basis=?, lim=?, rate=?, minpay=?, opening_date=?,
-      routing_number=?, account_number=?, debit_card_number=?, debit_card_exp=?, debit_card_cvv=?
+      routing_number=?, account_number=?, debit_card_number=?, debit_card_exp=?, debit_card_cvv=?,
+      property_type=?, address_street=?, address_city=?, address_state=?, address_zip=?,
+      ticker=?, shares=?, brokerage_account_id=?
     WHERE id=?
   `).run(
     name, inst || '', storedLast4, type,
     storedBasis, lim ?? null, rate ?? null, minpay ?? null, storedOpeningDate,
     details.routing_number, details.account_number,
     details.debit_card_number, details.debit_card_exp, details.debit_card_cvv,
+    details.property_type, details.address_street, details.address_city,
+    details.address_state, details.address_zip,
+    details.ticker, details.shares, details.brokerage_account_id,
     req.params.id,
   );
 
   if (balance != null && balance !== '') {
-    if (existing.kind === 'asset' && isValuedAssetType(type)) {
+    if (existing.kind === 'asset' && isHoldingAssetType(type)) {
+      applyHoldingValueUpdate(req.params.id, balance);
+    } else if (existing.kind === 'asset' && isValuedAssetType(type)) {
       applyRealEstateValueUpdate(req.params.id, balance);
     } else if (existing.kind === 'liability') {
       applyAccountBalanceTarget(req.params.id, balance);
     } else if (existing.kind === 'asset') {
       applyOpeningBalanceUpdate(req.params.id, balance);
     }
-  } else {
+  } else if (!isHoldingAssetType(type)) {
     syncAccountOpeningBalance(req.params.id);
   }
   const saved = db.prepare('SELECT * FROM accounts WHERE id = ?').get(req.params.id);
@@ -303,6 +428,7 @@ router.delete('/:id', async (req, res) => {
     return res.status(403).json({ error: 'Permission denied' });
   }
   try { await disconnectAccount(existing.id); } catch (_) {}
+  db.prepare('UPDATE accounts SET brokerage_account_id = NULL WHERE brokerage_account_id = ?').run(existing.id);
   db.prepare('DELETE FROM transactions WHERE account_id = ?').run(req.params.id);
   db.prepare('DELETE FROM accounts WHERE id = ?').run(req.params.id);
   res.json({ ok: true });
