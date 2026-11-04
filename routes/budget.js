@@ -4,7 +4,7 @@
  * What this file does:
  * - API for budget categories (income and expense groups).
  * - List, add, edit, and delete categories on the Budget page.
- * - Store per-period budgeted amounts so two comparison columns can differ.
+ * - Store per-period budgeted amounts so each history column can differ.
  *
  * Read FILES.md for a simple guide to every file.
  */

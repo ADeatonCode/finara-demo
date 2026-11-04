@@ -710,12 +710,51 @@
   .bs-chart-panel.active { display: block; }
   .bs-chart-wrap {
     padding: 10px 12px 14px;
+    min-height: 180px;
   }
   .bs-chart-wrap svg {
     width: 100%;
+    max-width: 100%;
     height: auto;
+    min-height: 180px;
+    aspect-ratio: 380 / 200;
     display: block;
   }
+  #bs-budget-history-chart {
+    min-height: 150px;
+    aspect-ratio: 720 / 220;
+  }
+  .bs-chart-panel .budget-history-legend {
+    padding: 10px 12px 0;
+  }
+  .bs-chart-panel .budget-history-note { margin-left: 0; }
+  .bs-chart-panel .budget-history-controls { margin-left: auto; }
+  .bs-side-metrics {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 12px;
+  }
+  .bs-charts-fab {
+    display: none;
+    position: fixed;
+    right: 14px;
+    bottom: 18px;
+    z-index: 260;
+    width: 52px;
+    height: 52px;
+    border: none;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.38);
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .bs-charts-fab svg { width: 22px; height: 22px; }
+  .bs-charts-sheet-bar { display: none; }
+  .bs-charts-backdrop { display: none; }
   .section-total.income { color: var(--green); }
   .section-total.expenses { color: var(--red); }
   .pl-card {
@@ -786,6 +825,7 @@
 
   /* ── TWO-COL LAYOUT ──────────────────────────────────── */
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .two-col > * { min-width: 0; }
   .section-card {
     background: var(--card-bg);
     border: 1px solid var(--border);
@@ -960,99 +1000,10 @@
     font-variant-numeric: tabular-nums;
   }
   #panel-budget .page-header {
-    align-items: flex-start;
+    align-items: center;
     gap: 12px;
   }
   #panel-budget .header-controls { flex-wrap: wrap; }
-  .budget-period-controls {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: stretch;
-    gap: 10px;
-    justify-content: flex-end;
-  }
-  .budget-period-slot {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 6px;
-    padding: 8px 10px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    background: #fff;
-    min-width: 280px;
-  }
-  .budget-period-slot-top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-  }
-  .budget-period-slot-label {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    white-space: nowrap;
-  }
-  .budget-period-when {
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    padding: 2px 7px;
-    border-radius: 999px;
-    background: #f3f4f6;
-    color: var(--text-secondary);
-  }
-  .budget-period-when-current { background: #eff6ff; color: #1d4ed8; }
-  .budget-period-when-future { background: #fff7ed; color: #c2410c; }
-  .budget-period-when-past { background: #f3f4f6; color: var(--text-secondary); }
-  .budget-period-slot .ctrl-select { min-width: 118px; }
-  .budget-period-nav {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .budget-period-identity {
-    flex: 1;
-    text-align: center;
-    min-width: 0;
-  }
-  .budget-period-title {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text-primary);
-    letter-spacing: -0.2px;
-    line-height: 1.2;
-  }
-  .budget-period-slot .date-range-display {
-    min-width: 0;
-    border: none;
-    background: transparent;
-    padding: 2px 0 0;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text-secondary);
-    display: block;
-    text-align: center;
-  }
-  .budget-period-slot-actions {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    flex-wrap: wrap;
-  }
-  .budget-period-shift {
-    padding: 6px 10px;
-    min-width: 0;
-    height: auto;
-    min-height: 32px;
-    justify-content: center;
-    font-weight: 600;
-    white-space: nowrap;
-  }
   thead th.budget-period-group {
     text-align: center;
     color: var(--text-primary);
@@ -1062,12 +1013,123 @@
     font-size: 12px;
     font-weight: 700;
     border-bottom: 1px solid var(--border);
+    min-width: 220px;
   }
   thead th.budget-period-group-alt { background: #f3f4f6; }
   thead th.budget-period-group-current { background: #eff6ff; }
-  thead th.budget-period-group-future { background: #fff7ed; }
-  #panel-budget .section-card { overflow-x: auto; }
+  thead th.budget-period-group-future { background: #f0fdf4; }
+  thead th.budget-period-metric { min-width: 84px; width: 84px; }
+  thead th.budget-period-metric.budget-period-group-alt { background: #f8fafc; }
+  thead th.budget-period-metric.budget-period-group-current { background: #eff6ff; }
+  thead th.budget-period-metric.budget-period-group-future { background: #f0fdf4; }
+  #panel-budget .section-card { overflow: visible; }
   #panel-budget .budget-history-card { overflow: visible; }
+  #panel-budget {
+    --budget-cat-w: 188px;
+    --budget-cadence-w: 168px;
+  }
+  .budget-sheet-scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+    cursor: grab;
+    touch-action: pan-y;
+  }
+  .budget-sheet-scroll.budget-sheet-dragging {
+    cursor: grabbing;
+    user-select: none;
+  }
+  .budget-sheet-scroll.budget-sheet-dragging * {
+    cursor: grabbing !important;
+    user-select: none;
+  }
+  .budget-sheet-scroll .budget-col-cat,
+  .budget-sheet-scroll .budget-col-cadence {
+    cursor: default;
+  }
+  .budget-sheet-scroll input,
+  .budget-sheet-scroll select,
+  .budget-sheet-scroll textarea {
+    cursor: text;
+  }
+  .budget-sheet-scroll select { cursor: pointer; }
+  .budget-sheet-scroll button,
+  .budget-sheet-scroll .action-btn {
+    cursor: pointer;
+  }
+  .budget-sheet-scroll table {
+    width: max-content;
+    min-width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+  }
+  .budget-sheet-scroll .budget-col-cat,
+  .budget-sheet-scroll .budget-col-cadence {
+    position: sticky;
+    z-index: 3;
+    background: #fff;
+  }
+  .budget-sheet-scroll .budget-col-cat {
+    left: 0;
+    width: var(--budget-cat-w);
+    min-width: var(--budget-cat-w);
+    max-width: var(--budget-cat-w);
+  }
+  .budget-sheet-scroll .budget-col-cadence {
+    left: var(--budget-cat-w);
+    width: var(--budget-cadence-w);
+    min-width: var(--budget-cadence-w);
+    max-width: var(--budget-cadence-w);
+    border-right: 2px solid #9ca3af;
+  }
+  .budget-sheet-scroll thead .budget-col-cat,
+  .budget-sheet-scroll thead .budget-col-cadence {
+    z-index: 4;
+    background: #fafafa;
+  }
+  .budget-sheet-scroll tfoot .budget-col-cat,
+  .budget-sheet-scroll tfoot .budget-col-cadence {
+    background: #f9fafb;
+  }
+  .budget-sheet-scroll tbody tr:nth-child(even):not(.txn-row-editing):not(.txn-row-new) .budget-col-cat,
+  .budget-sheet-scroll tbody tr:nth-child(even):not(.txn-row-editing):not(.txn-row-new) .budget-col-cadence {
+    background: #eef2f7;
+  }
+  .budget-sheet-scroll tbody tr.txn-row:hover .budget-col-cat,
+  .budget-sheet-scroll tbody tr.txn-row:hover .budget-col-cadence,
+  .budget-sheet-scroll tbody tr.txn-row-new:hover .budget-col-cat,
+  .budget-sheet-scroll tbody tr.txn-row-new:hover .budget-col-cadence {
+    background: #dde7ff;
+  }
+  .budget-sheet-scroll tbody tr.txn-row-editing .budget-col-cat,
+  .budget-sheet-scroll tbody tr.txn-row-editing .budget-col-cadence {
+    background: #fff;
+  }
+  .budget-sheet-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: max-content;
+    min-width: 100%;
+  }
+  .budget-sheet-stack .section-card {
+    width: 100%;
+  }
+  .budget-sheet-scroll .budget-sheet-pin-header {
+    position: sticky;
+    left: 0;
+    z-index: 5;
+    width: var(--budget-sheet-view, 100%);
+    max-width: var(--budget-sheet-view, 100%);
+    box-sizing: border-box;
+    background: var(--card-bg);
+  }
+  .budget-sheet-scroll td.num,
+  .budget-sheet-scroll tfoot td.num {
+    width: 84px;
+    min-width: 84px;
+  }
   #panel-budget [hidden] { display: none !important; }
   .budget-history-controls {
     display: flex;
@@ -1081,6 +1143,16 @@
     color: var(--text-secondary);
   }
   .budget-history-from { min-width: 140px; }
+  .budget-cadence-select { min-width: 148px; }
+  .budget-range-input {
+    min-width: 188px;
+  }
+  .budget-range-cap-note {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    max-width: 260px;
+  }
   .budget-history-legend {
     display: flex;
     align-items: center;
@@ -1793,17 +1865,6 @@
     font-family: inherit;
   }
 
-  /* ── FOOTER ──────────────────────────────────────────── */
-  .app-footer {
-    margin-top: auto;
-    padding: 14px 28px;
-    border-top: 1px solid var(--border);
-    text-align: center;
-    font-size: 11px;
-    color: var(--text-muted);
-    background: var(--bg-main);
-  }
-
   .print-only { display: none; }
 
   @media print {
@@ -1817,9 +1878,18 @@
 
     .sidebar,
     .no-print,
-    .app-footer,
-    .credit-manage-btn {
+    .credit-manage-btn,
+    .bs-charts-fab,
+    .bs-charts-sheet-bar,
+    .bs-charts-backdrop {
       display: none !important;
+    }
+    .bs-charts-sheet {
+      display: block !important;
+      position: static !important;
+      max-height: none !important;
+      box-shadow: none !important;
+      overflow: visible !important;
     }
 
     .main {
@@ -1865,7 +1935,7 @@
   }
 
   /* ── RESPONSIVE ──────────────────────────────────────── */
-  @media (max-width: 767px) {
+  @media (max-width: 767px), (max-width: 900px) and (pointer: coarse) {
     :root { --sidebar-w: 52px; }
     .sidebar-logo .logo-text,
     .sidebar-user .user-info,
@@ -1882,8 +1952,73 @@
     .btn-sync { width: auto; padding: 7px 10px; }
     .two-col { grid-template-columns: 1fr; }
     .stat-row { grid-template-columns: 1fr; }
+    .bs-side-metrics { grid-template-columns: 1fr; }
+    .page-header { flex-wrap: wrap; gap: 8px; padding: 12px 14px; }
+    .header-controls { flex-wrap: wrap; }
     .modal-overlay { left: 0; width: 100vw; }
     .modal-overlay.open > .modal { left: 50%; max-width: calc(100vw - 48px); }
+    .bs-charts-sheet {
+      display: none;
+      position: fixed;
+      left: var(--sidebar-w);
+      right: 0;
+      bottom: 0;
+      z-index: 280;
+      max-height: min(78vh, 640px);
+      background: var(--bg-main);
+      border-radius: 14px 14px 0 0;
+      box-shadow: 0 -8px 32px rgba(15, 23, 42, 0.2);
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .bs-charts-sheet.open { display: flex; }
+    .bs-charts-sheet-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      background: var(--card-bg);
+      flex-shrink: 0;
+    }
+    .bs-charts-sheet-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .bs-charts-sheet-close {
+      border: 1px solid var(--border);
+      background: #f9fafb;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .bs-charts-sheet .bs-charts-card {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      border: none;
+      border-radius: 0;
+      -webkit-overflow-scrolling: touch;
+    }
+    .bs-charts-backdrop {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: var(--sidebar-w);
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 270;
+    }
+    .bs-charts-sheet.open + .bs-charts-backdrop { display: block; }
+    #panel-balance.active .bs-charts-fab { display: flex; }
+    body.bs-charts-open .bs-charts-fab { display: none !important; }
   }
 </style>
 </head>
@@ -2152,9 +2287,14 @@
 
         </div><!-- /left balance-col -->
 
-        <!-- RIGHT: Charts (tabs) -->
-        <div class="balance-col">
-          <div class="section-card">
+        <!-- RIGHT: Charts (tabs). On phones this card opens from the FAB sheet. -->
+        <div class="balance-col bs-charts-col">
+          <div class="bs-charts-sheet" id="bs-charts-sheet" role="dialog" aria-modal="false" aria-labelledby="bs-charts-sheet-title">
+            <div class="bs-charts-sheet-bar">
+              <span class="bs-charts-sheet-title" id="bs-charts-sheet-title">Charts</span>
+              <button type="button" class="bs-charts-sheet-close" onclick="closeBsChartsSheet()">Close</button>
+            </div>
+          <div class="section-card bs-charts-card">
             <div class="section-header">
               <span class="section-title" id="bs-chart-title">Income Breakdown</span>
               <span class="section-total income" id="bs-chart-total">$0.00</span>
@@ -2164,31 +2304,53 @@
               <button type="button" class="bs-chart-tab" data-bs-chart="expense-breakdown" onclick="switchBsChartTab('expense-breakdown')">Expense Breakdown</button>
               <button type="button" class="bs-chart-tab" data-bs-chart="daily-pl" onclick="switchBsChartTab('daily-pl')">Daily P/L</button>
               <button type="button" class="bs-chart-tab" data-bs-chart="net-worth" onclick="switchBsChartTab('net-worth')">Net Worth</button>
+              <button type="button" class="bs-chart-tab" data-bs-chart="budget-vs-actual" onclick="switchBsChartTab('budget-vs-actual')">Budget vs Actual</button>
+            </div>
+            <div class="bs-chart-panel" id="bs-chart-budget-vs-actual">
+              <div class="budget-history-legend">
+                <span><span class="budget-history-swatch budget-history-swatch-budget"></span>Budget</span>
+                <span><span class="budget-history-swatch budget-history-swatch-actual"></span>Actual</span>
+                <div class="budget-history-controls">
+                  <label class="budget-history-label" for="bs-budget-history-preset">History</label>
+                  <select class="ctrl-select" id="bs-budget-history-preset" onchange="setBudgetHistoryRange(this.value)" aria-label="Budget history range">
+                    <option value="3">Last 3 months</option>
+                    <option value="6" selected>Last 6 months</option>
+                    <option value="12">Last 12 months</option>
+                    <option value="from">From date</option>
+                  </select>
+                  <input class="ctrl-select budget-history-from" type="date" id="bs-budget-history-from" onchange="setBudgetHistoryFrom(this.value)" hidden aria-label="History start date">
+                </div>
+              </div>
+              <div class="bs-chart-wrap">
+                <svg id="bs-budget-history-chart" viewBox="0 0 720 220" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg>
+              </div>
             </div>
             <div class="bs-chart-panel" id="bs-chart-net-worth">
               <div class="bs-chart-wrap">
-                <svg id="bs-net-worth-chart" viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg"></svg>
+                <svg id="bs-net-worth-chart" viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg>
               </div>
             </div>
             <div class="bs-chart-panel" id="bs-chart-daily-pl">
               <div class="bs-chart-wrap">
-                <svg id="bs-daily-pl-chart" viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg"></svg>
+                <svg id="bs-daily-pl-chart" viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg>
               </div>
             </div>
             <div class="bs-chart-panel" id="bs-chart-expense-breakdown">
               <div class="bs-chart-wrap">
-                <svg id="expense-pie" viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg"></svg>
+                <svg id="expense-pie" viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg>
               </div>
             </div>
             <div class="bs-chart-panel active" id="bs-chart-income-breakdown">
               <div class="bs-chart-wrap">
-                <svg id="income-pie" viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg"></svg>
+                <svg id="income-pie" viewBox="0 0 380 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet"></svg>
               </div>
             </div>
           </div>
+          </div>
+          <div class="bs-charts-backdrop" id="bs-charts-backdrop" onclick="closeBsChartsSheet()"></div>
 
           <!-- BUYING POWER + CREDIT SCORE row -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px">
+          <div class="bs-side-metrics">
 
             <!-- Buying Power -->
             <div class="section-card">
@@ -2334,7 +2496,15 @@
 
       </div><!-- /row 2 two-col -->
     </div><!-- /page-body -->
-    <div class="app-footer">Made with IBM Bob</div>
+    <button type="button" class="bs-charts-fab" id="bs-charts-fab" onclick="openBsChartsSheet()" aria-label="Open charts" aria-expanded="false" aria-controls="bs-charts-sheet">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 19V5"/>
+        <path d="M4 19h16"/>
+        <rect x="7" y="10" width="3" height="6" rx="0.5" fill="currentColor" stroke="none"/>
+        <rect x="12" y="7" width="3" height="9" rx="0.5" fill="currentColor" stroke="none"/>
+        <rect x="17" y="12" width="3" height="4" rx="0.5" fill="currentColor" stroke="none"/>
+      </svg>
+    </button>
   </div><!-- /panel-balance -->
 
 
@@ -2344,65 +2514,20 @@
   <div class="panel" id="panel-budget">
     <div class="page-header">
       <div class="page-title">Budget Sheet</div>
-      <div class="header-controls budget-period-controls">
-        <div class="budget-period-slot">
-          <div class="budget-period-slot-top">
-            <span class="budget-period-slot-label">Period 1</span>
-            <span class="budget-period-when" id="budget-period-0-when">Current</span>
-          </div>
-          <select class="ctrl-select" id="budget-period-0-type" onchange="setBudgetCompareType(0, this.value)" aria-label="Budget period 1 type">
-            <option value="Weekly">Weekly</option>
-            <option value="Bi-weekly">Bi-weekly</option>
-            <option value="Twice a month">Twice a month (1st &amp; 15th)</option>
-            <option value="Monthly" selected>Monthly</option>
-            <option value="Yearly">Yearly</option>
-            <option value="All transactions">All transactions</option>
-          </select>
-          <div class="budget-period-nav">
-            <button class="ctrl-btn budget-period-shift" type="button" id="budget-period-0-prev" onclick="shiftBudgetComparePeriod(0, -1)" title="Previous period" aria-label="Previous period 1">← Back</button>
-            <div class="budget-period-identity">
-              <div class="budget-period-title" id="budget-period-0-title">This month</div>
-              <span class="date-range-display" id="budget-period-0-range"></span>
-            </div>
-            <button class="ctrl-btn budget-period-shift" type="button" id="budget-period-0-next" onclick="shiftBudgetComparePeriod(0, 1)" title="Next period" aria-label="Next period 1">Forward →</button>
-          </div>
-          <div class="budget-period-slot-actions">
-            <button class="ctrl-btn" id="budget-period-0-current" type="button" onclick="jumpBudgetCompareToCurrent(0)" hidden>This month</button>
-            <button class="ctrl-btn" id="budget-period-0-custom-btn" type="button" onclick="openBudgetPeriodModal(0)">
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="2" width="10" height="9" rx="1.5"/><line x1="4" y1="1" x2="4" y2="3"/><line x1="8" y1="1" x2="8" y2="3"/></svg>
-              Change dates
-            </button>
-          </div>
-        </div>
-        <div class="budget-period-slot">
-          <div class="budget-period-slot-top">
-            <span class="budget-period-slot-label">Period 2</span>
-            <span class="budget-period-when" id="budget-period-1-when">Past</span>
-          </div>
-          <select class="ctrl-select" id="budget-period-1-type" onchange="setBudgetCompareType(1, this.value)" aria-label="Budget period 2 type">
-            <option value="Weekly">Weekly</option>
-            <option value="Bi-weekly">Bi-weekly</option>
-            <option value="Twice a month">Twice a month (1st &amp; 15th)</option>
-            <option value="Monthly" selected>Monthly</option>
-            <option value="Yearly">Yearly</option>
-            <option value="All transactions">All transactions</option>
-          </select>
-          <div class="budget-period-nav">
-            <button class="ctrl-btn budget-period-shift" type="button" id="budget-period-1-prev" onclick="shiftBudgetComparePeriod(1, -1)" title="Previous period" aria-label="Previous period 2">← Back</button>
-            <div class="budget-period-identity">
-              <div class="budget-period-title" id="budget-period-1-title">Last month</div>
-              <span class="date-range-display" id="budget-period-1-range"></span>
-            </div>
-            <button class="ctrl-btn budget-period-shift" type="button" id="budget-period-1-next" onclick="shiftBudgetComparePeriod(1, 1)" title="Next period" aria-label="Next period 2">Forward →</button>
-          </div>
-          <div class="budget-period-slot-actions">
-            <button class="ctrl-btn" id="budget-period-1-current" type="button" onclick="jumpBudgetCompareToCurrent(1)" hidden>This month</button>
-            <button class="ctrl-btn" id="budget-period-1-custom-btn" type="button" onclick="openBudgetPeriodModal(1)">
-              <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="2" width="10" height="9" rx="1.5"/><line x1="4" y1="1" x2="4" y2="3"/><line x1="8" y1="1" x2="8" y2="3"/></svg>
-              Change dates
-            </button>
-          </div>
-        </div>
+      <div class="header-controls budget-history-controls">
+        <label class="budget-history-label" for="budget-sheet-cadence">Cadence</label>
+        <select class="ctrl-select budget-cadence-select" id="budget-sheet-cadence" onchange="setBudgetSheetCadence(this.value)" aria-label="Budget cadence">
+          <option value="weekly">Weekly</option>
+          <option value="biweekly">Bi-weekly</option>
+          <option value="bimonthly">Twice a month</option>
+          <option value="monthly" selected>Monthly</option>
+          <option value="yearly">Yearly</option>
+        </select>
+        <label class="budget-history-label" for="budget-range-from">From</label>
+        <select class="ctrl-select budget-range-input" id="budget-range-from" onchange="setBudgetSheetFrom(this.value)" aria-label="Budget start period"></select>
+        <label class="budget-history-label" for="budget-range-to">To</label>
+        <select class="ctrl-select budget-range-input" id="budget-range-to" onchange="setBudgetSheetTo(this.value)" aria-label="Budget end period"></select>
+        <span class="budget-range-cap-note" id="budget-range-cap-note" hidden>That’s a lot of columns — showing 120 periods.</span>
       </div>
     </div>
     <div class="page-body">
@@ -2424,87 +2549,34 @@
         </div>
       </div>
 
-      <div class="section-card budget-history-card">
-        <div class="section-header">
-          <span class="section-title">Budget vs Actual</span>
-          <div class="budget-history-controls">
-            <label class="budget-history-label" for="budget-history-preset">History</label>
-            <select class="ctrl-select" id="budget-history-preset" onchange="setBudgetHistoryRange(this.value)" aria-label="Budget history range">
-              <option value="3">Last 3 months</option>
-              <option value="6" selected>Last 6 months</option>
-              <option value="12">Last 12 months</option>
-              <option value="from">From date</option>
-            </select>
-            <input class="ctrl-select budget-history-from" type="date" id="budget-history-from" onchange="setBudgetHistoryFrom(this.value)" hidden aria-label="History start date">
+      <div class="budget-sheet-scroll" id="budget-sheet-scroll">
+        <div class="budget-sheet-stack">
+          <div class="section-card">
+            <div class="section-header budget-sheet-pin-header">
+              <span class="section-title">Income</span>
+              <span id="budget-income-meta" style="font-size:11px;color:var(--text-muted);"></span>
+            </div>
+            <table>
+              <thead id="budget-income-thead"></thead>
+              <tbody id="budget-income-rows"></tbody>
+              <tfoot id="budget-income-tfoot"></tfoot>
+            </table>
+          </div>
+
+          <div class="section-card">
+            <div class="section-header budget-sheet-pin-header">
+              <span class="section-title">Expenses</span>
+              <span id="budget-expense-meta" style="font-size:11px;color:var(--text-muted);"></span>
+            </div>
+            <table>
+              <thead id="budget-expense-thead"></thead>
+              <tbody id="budget-expense-rows"></tbody>
+              <tfoot id="budget-expense-tfoot"></tfoot>
+            </table>
           </div>
         </div>
-        <div class="budget-history-legend">
-          <span><span class="budget-history-swatch budget-history-swatch-budget"></span>Budget</span>
-          <span><span class="budget-history-swatch budget-history-swatch-actual"></span>Actual</span>
-          <span class="budget-history-note">Income + expenses · through this month</span>
-        </div>
-        <div class="budget-history-chart-wrap">
-          <svg id="budget-history-chart" viewBox="0 0 720 220" xmlns="http://www.w3.org/2000/svg"></svg>
-        </div>
-      </div>
-
-      <div class="section-card">
-        <div class="section-header">
-          <span class="section-title">Income</span>
-          <span id="budget-income-meta" style="font-size:11px;color:var(--text-muted);"></span>
-        </div>
-        <table>
-          <thead id="budget-income-thead">
-            <tr>
-              <th rowspan="2" style="width:22%">Category</th>
-              <th rowspan="2">Cadence</th>
-              <th class="num budget-period-group" colspan="3">This month</th>
-              <th class="num budget-period-group budget-period-group-alt" colspan="3">Last month</th>
-              <th rowspan="2"></th>
-            </tr>
-            <tr>
-              <th class="num">Budget</th>
-              <th class="num">Actual</th>
-              <th class="num">Remaining</th>
-              <th class="num">Budget</th>
-              <th class="num">Actual</th>
-              <th class="num">Remaining</th>
-            </tr>
-          </thead>
-          <tbody id="budget-income-rows"></tbody>
-          <tfoot id="budget-income-tfoot"></tfoot>
-        </table>
-      </div>
-
-      <div class="section-card">
-        <div class="section-header">
-          <span class="section-title">Expenses</span>
-          <span id="budget-expense-meta" style="font-size:11px;color:var(--text-muted);"></span>
-        </div>
-        <table>
-          <thead id="budget-expense-thead">
-            <tr>
-              <th rowspan="2" style="width:22%">Category</th>
-              <th rowspan="2">Cadence</th>
-              <th class="num budget-period-group" colspan="3">This month</th>
-              <th class="num budget-period-group budget-period-group-alt" colspan="3">Last month</th>
-              <th rowspan="2"></th>
-            </tr>
-            <tr>
-              <th class="num">Budget</th>
-              <th class="num">Actual</th>
-              <th class="num">Remaining</th>
-              <th class="num">Budget</th>
-              <th class="num">Actual</th>
-              <th class="num">Remaining</th>
-            </tr>
-          </thead>
-          <tbody id="budget-expense-rows"></tbody>
-          <tfoot id="budget-expense-tfoot"></tfoot>
-        </table>
       </div>
     </div>
-    <div class="app-footer">Made with IBM Bob</div>
   </div><!-- /panel-budget -->
 
 
@@ -2578,7 +2650,6 @@
         </table>
       </div>
     </div>
-    <div class="app-footer">Made with IBM Bob</div>
   </div><!-- /panel-transactions -->
 
   <!-- ─────────────────────────────────────────────────────
@@ -2637,7 +2708,6 @@
         </table>
       </div>
     </div>
-    <div class="app-footer">Made with IBM Bob</div>
   </div><!-- /panel-assets -->
 
 
@@ -2698,7 +2768,6 @@
         </table>
       </div>
     </div>
-    <div class="app-footer">Made with IBM Bob</div>
   </div><!-- /panel-liabilities -->
 
   <!-- ─────────────────────────────────────────────────────
@@ -2746,7 +2815,6 @@
         </table>
       </div>
     </div>
-    <div class="app-footer">Made with IBM Bob</div>
   </div><!-- /panel-users -->
 
 </main>
@@ -3032,32 +3100,6 @@
     <div class="modal-footer">
       <button class="btn-cancel" onclick="closeModal('modal-txn-period')">Cancel</button>
       <button class="btn-primary" onclick="applyAppPeriodRange()">Apply</button>
-    </div>
-  </div>
-</div>
-
-<!-- Budget comparison period modal -->
-<div class="modal-overlay" id="modal-budget-period">
-  <div class="modal" style="width:400px">
-    <div class="modal-header">
-      <span class="modal-title">Change Budget Period</span>
-      <button class="modal-close" onclick="closeModal('modal-budget-period')">×</button>
-    </div>
-    <div class="modal-body">
-      <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Start Date</label>
-          <input class="form-input" type="date" id="budget-period-start">
-        </div>
-        <div class="form-group">
-          <label class="form-label">End Date</label>
-          <input class="form-input" type="date" id="budget-period-end">
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-cancel" onclick="closeModal('modal-budget-period')">Cancel</button>
-      <button class="btn-primary" onclick="applyBudgetPeriodRange()">Apply</button>
     </div>
   </div>
 </div>
@@ -3769,13 +3811,18 @@
   let appPeriodType = 'all';
   let appCustomRange = null;
   let appPeriodMenuOpen = null;
-  let budgetComparePeriods = [
-    { type: 'monthly', offset: 0, customRange: null },
-    { type: 'monthly', offset: 1, customRange: null },
-  ];
-  let budgetPeriodModalSlot = 0;
+  const BUDGET_SHEET_MAX_PERIODS = 120;
+  const BUDGET_SHEET_DEFAULT_PAST = 5;
+  const BUDGET_SHEET_DEFAULT_AHEAD = 3;
+
+  let budgetComparePeriods = [];
+  let budgetSheetDidScroll = false;
   let budgetHistoryPreset = '6';
   let budgetHistoryFrom = '';
+  let budgetSheetPeriodType = 'monthly';
+  let budgetSheetFromIso = '';
+  let budgetSheetToIso = '';
+  let budgetSheetRangeCapped = false;
 
   let txnData       = [];
   let txnDisplayData = [];
@@ -4284,6 +4331,7 @@
 
     buildDailyPlChart(chartIncome, chartExpenses);
     buildNetWorthChart();
+    renderBudgetHistoryChart();
     buildCategoryBreakdownPie('expense-pie', expenseCategories.map(r => ({ cat: r.category, amt: r.actual })), {
       total: totalExpenses,
       centerColor: '#dc2626',
@@ -4857,7 +4905,7 @@
       return {
         budgeted,
         actual,
-        remaining: actual - budgeted,
+        remaining: budgeted - actual,
         stored,
         future: budgetPeriodTiming(period) === 'future',
       };
@@ -4886,9 +4934,7 @@
   }
 
   function budgetRemainingClass(kind, rem) {
-    return kind === 'income'
-      ? (rem >= 0 ? 'rem-positive' : 'rem-negative')
-      : (rem > 0 ? 'rem-negative' : 'rem-positive');
+    return rem < 0 ? 'val-negative' : '';
   }
 
   function formatBudgetSignedMoney(n) {
@@ -5041,12 +5087,15 @@
       el.classList.toggle('active', el.dataset.tab === tab));
     document.querySelectorAll('.panel').forEach(el =>
       el.classList.toggle('active', el.id === 'panel-' + tab));
+    if (tab !== 'balance') closeBsChartsSheet();
     if (tab === 'transactions') {
       restoreTxnLedgerScrollStateForAccount();
       buildTransactions().catch(e => alert('Failed to load transactions: ' + e.message));
       queuePlaidSyncForAccount(txnAccountId);
     } else if (tab === 'users') {
       buildUsers().catch(e => alert('Failed to load users: ' + e.message));
+    } else if (tab === 'budget' && !budgetSheetDidScroll) {
+      requestAnimationFrame(() => restoreBudgetSheetScroll({}));
     }
   }
 
@@ -5294,46 +5343,44 @@
     if (!thead) return;
     const groups = budgetComparePeriods.map((period, slot) => {
       const timing = budgetPeriodTiming(period);
-      const extra = slot === 1 ? ' budget-period-group-alt' : '';
-      const timingClass = timing === 'future' ? ' budget-period-group-future' : timing === 'current' ? ' budget-period-group-current' : '';
-      const badge = timing === 'future' ? ' · Future' : timing === 'current' ? ' · Current' : '';
+      const extra = slot % 2 === 1 ? ' budget-period-group-alt' : '';
+      const timingClass = timing === 'current' ? ' budget-period-group-current' : (timing === 'future' ? ' budget-period-group-future' : '');
+      const badge = timing === 'current' ? ' · Current' : '';
       return `<th class="num budget-period-group${extra}${timingClass}" colspan="3">${escHtml(budgetPeriodTitle(period))}${escHtml(badge)}</th>`;
     });
+    const metrics = budgetComparePeriods.map((period, slot) => {
+      const timing = budgetPeriodTiming(period);
+      const extra = slot % 2 === 1 ? ' budget-period-group-alt' : '';
+      const timingClass = timing === 'current' ? ' budget-period-group-current' : (timing === 'future' ? ' budget-period-group-future' : '');
+      return `<th class="num budget-period-metric${extra}${timingClass}">Budget</th>
+      <th class="num budget-period-metric${extra}${timingClass}">Actual</th>
+      <th class="num budget-period-metric${extra}${timingClass}">Remaining</th>`;
+    }).join('');
     thead.innerHTML = `<tr>
-      <th rowspan="2" style="width:22%">Category</th>
-      <th rowspan="2">Cadence</th>
+      <th rowspan="2" class="budget-col-cat">Category</th>
+      <th rowspan="2" class="budget-col-cadence">Cadence</th>
       ${groups.join('')}
       <th rowspan="2"></th>
     </tr>
-    <tr>
-      <th class="num">Budget</th>
-      <th class="num">Actual</th>
-      <th class="num">Remaining</th>
-      <th class="num">Budget</th>
-      <th class="num">Actual</th>
-      <th class="num">Remaining</th>
-    </tr>`;
+    <tr>${metrics}</tr>`;
   }
 
   function renderBudgetPeriodCells(periods, kind, opts = {}) {
     const editing = !!opts.editing;
     return periods.map((p, slot) => {
       const remClass = budgetRemainingClass(kind, p.remaining);
-      const unplanned = p.future && !p.stored;
       if (editing) {
-        const emptyBudget = opts.placeholder || unplanned;
+        const emptyBudget = !!opts.placeholder;
         const valueAttr = emptyBudget ? ' placeholder="0.00"' : ` value="${p.budgeted}"`;
-        const actualText = opts.placeholder ? '—' : `$${fmt(p.actual)}`;
-        const remText = opts.placeholder || unplanned ? '—' : formatBudgetSignedMoney(p.remaining);
-        return `<td><input class="txn-inline-input num" type="number" step="0.01" min="0" id="budget-inline-budgeted-${slot}"${valueAttr} onclick="event.stopPropagation()"></td>
+        const actualText = emptyBudget ? '—' : `$${fmt(p.actual)}`;
+        const remText = emptyBudget ? '—' : formatBudgetSignedMoney(p.remaining);
+        return `<td class="num"><input class="txn-inline-input num" type="number" step="0.01" min="0" id="budget-inline-budgeted-${slot}"${valueAttr} onclick="event.stopPropagation()"></td>
       <td class="num budget-actual-readonly">${actualText}</td>
-      <td class="num ${opts.placeholder || unplanned ? '' : remClass}" style="${opts.placeholder || unplanned ? 'color:var(--text-muted)' : ''}">${remText}</td>`;
+      <td class="num ${emptyBudget ? '' : remClass}" style="${emptyBudget ? 'color:var(--text-muted)' : ''}">${remText}</td>`;
       }
-      const budgetText = unplanned ? '—' : `$${fmt(p.budgeted)}`;
-      const remText = unplanned ? '—' : formatBudgetSignedMoney(p.remaining);
-      return `<td class="num">${budgetText}</td>
+      return `<td class="num">$${fmt(p.budgeted)}</td>
       <td class="num budget-actual-readonly">$${fmt(p.actual)}</td>
-      <td class="num ${unplanned ? '' : remClass}" style="${unplanned ? 'color:var(--text-muted)' : ''}">${remText}</td>`;
+      <td class="num ${remClass}">${formatBudgetSignedMoney(p.remaining)}</td>`;
     }).join('');
   }
 
@@ -5374,9 +5421,10 @@
 
     const sectionLabel = isIncome ? 'Income' : 'Expenses';
     tfoot.innerHTML = `<tr class="tfoot-row">
-      <td colspan="2">Total ${sectionLabel}</td>
+      <td class="budget-col-cat">Total ${sectionLabel}</td>
+      <td class="budget-col-cadence"></td>
       ${totals.map(t => {
-        const rem = t.A - t.B;
+        const rem = t.B - t.A;
         return `<td class="num">$${fmt(t.B)}</td>
       <td class="num">$${fmt(t.A)}</td>
       <td class="num ${budgetRemainingClass(kind, rem)}">${formatBudgetSignedMoney(rem)}</td>`;
@@ -5384,7 +5432,8 @@
       <td></td>
     </tr>`;
     if (meta) {
-      meta.textContent = `${count} ${count === 1 ? 'category' : 'categories'} · ${budgetPeriodShortLabel(budgetComparePeriods[0])} vs ${budgetPeriodShortLabel(budgetComparePeriods[1])}`;
+      const rangeLabel = budgetHistoryRangeLabel();
+      meta.textContent = `${count} ${count === 1 ? 'category' : 'categories'}${rangeLabel ? ` · ${rangeLabel}` : ''}`;
     }
     return { totals };
   }
@@ -5394,29 +5443,32 @@
       budgetEditingIdx = null;
       budgetEditingPrefix = 'budget';
     }
+    syncBudgetSheetPeriods();
+    const prevScroll = captureBudgetSheetScroll();
     renderBudgetSection('income', { lockKind: 'income', hideKindColumn: true });
     renderBudgetSection('expense', { lockKind: 'expense', hideKindColumn: true });
-    const [p0, p1] = computeBudgetCompareTotals();
-    const net = p0.net;
+    const totals = computeBudgetCompareTotals();
+    const current = totals[currentBudgetPeriodIndex()] || totals[totals.length - 1] || { income: 0, expense: 0, net: 0 };
+    const net = current.net;
 
     const incomeEl = document.getElementById('budget-total-income');
     const expenseEl = document.getElementById('budget-total-expense');
     const netEl = document.getElementById('budget-net-value');
-    if (incomeEl) incomeEl.textContent = `$${fmt(p0.income)}`;
-    if (expenseEl) expenseEl.textContent = `$${fmt(p0.expense)}`;
+    if (incomeEl) incomeEl.textContent = `$${fmt(current.income)}`;
+    if (expenseEl) expenseEl.textContent = `$${fmt(current.expense)}`;
     if (netEl) {
       netEl.textContent = `${net < 0 ? '−' : ''}$${fmt(Math.abs(net))}`;
       netEl.className = `stat-value ${net >= 0 ? 'val-positive' : 'val-negative'}`;
     }
 
-    const label0 = budgetPeriodShortLabel(budgetComparePeriods[0]);
-    const label1 = budgetPeriodShortLabel(budgetComparePeriods[1]);
-    setBalanceSheetText('budget-total-income-meta', `${label0} actual · ${label1} $${fmt(p1.income)}`);
-    setBalanceSheetText('budget-total-expense-meta', `${label0} actual · ${label1} $${fmt(p1.expense)}`);
-    setBalanceSheetText('budget-net-meta', `${label0} · ${label1} ${formatBudgetSignedMoney(p1.net)}`);
+    const currentLabel = budgetPeriodShortLabel(currentBudgetPeriod()) || 'This month';
+    setBalanceSheetText('budget-total-income-meta', `${currentLabel} actual`);
+    setBalanceSheetText('budget-total-expense-meta', `${currentLabel} actual`);
+    setBalanceSheetText('budget-net-meta', `${currentLabel} · income − expenses`);
 
-    updateBudgetPeriodDisplay();
     renderBudgetHistoryChart();
+    restoreBudgetSheetScroll(prevScroll);
+    bindBudgetSheetScroll();
 
     if (budgetEditingIdx !== null) {
       const catEl = document.getElementById('budget-inline-cat');
@@ -5462,127 +5514,146 @@
     setAppPeriod(type, { resetCustom: true });
   }
 
-  function updateBudgetPeriodDisplay() {
-    syncBudgetPeriodUI();
-  }
-
   function defaultBudgetCadence() {
-    return APP_TO_BUDGET_TF[budgetComparePeriods[0]?.type] || 'Monthly';
+    return 'Monthly';
   }
 
-  function syncBudgetPeriodUI() {
-    for (let slot = 0; slot < 2; slot++) {
-      const period = budgetComparePeriods[slot];
-      const selectEl = document.getElementById(`budget-period-${slot}-type`);
-      if (selectEl) selectEl.value = APP_TO_BUDGET_TF[period.type] || 'Monthly';
-      const isAll = period.type === 'all' && !period.customRange;
-      const timing = budgetPeriodTiming(period);
-
-      const titleEl = document.getElementById(`budget-period-${slot}-title`);
-      if (titleEl) titleEl.textContent = budgetPeriodTitle(period);
-
-      const rangeEl = document.getElementById(`budget-period-${slot}-range`);
-      if (rangeEl) {
-        rangeEl.textContent = isAll ? 'All transactions' : budgetPeriodRangeLabel(period);
-        rangeEl.hidden = isAll;
-      }
-
-      const whenEl = document.getElementById(`budget-period-${slot}-when`);
-      if (whenEl) {
-        whenEl.textContent = timing === 'future' ? 'Future' : timing === 'past' ? 'Past' : timing === 'current' ? 'Current' : '';
-        whenEl.className = `budget-period-when budget-period-when-${timing}`;
-        whenEl.hidden = isAll;
-      }
-
-      const prevEl = document.getElementById(`budget-period-${slot}-prev`);
-      if (prevEl) {
-        prevEl.hidden = isAll;
-        const neighbor = isAll ? null : cloneBudgetPeriodShift(period, -1);
-        prevEl.textContent = neighbor ? `← ${budgetPeriodNavLabel(neighbor)}` : '← Back';
-      }
-      const nextEl = document.getElementById(`budget-period-${slot}-next`);
-      if (nextEl) {
-        nextEl.hidden = isAll;
-        nextEl.disabled = false;
-        const neighbor = isAll ? null : cloneBudgetPeriodShift(period, 1);
-        nextEl.textContent = neighbor ? `${budgetPeriodNavLabel(neighbor)} →` : 'Forward →';
-      }
-
-      const jumpEl = document.getElementById(`budget-period-${slot}-current`);
-      if (jumpEl) {
-        jumpEl.hidden = isAll || timing === 'current';
-        jumpEl.textContent = period.type === 'yearly' ? 'This year'
-          : period.type === 'weekly' ? 'This week'
-          : period.type === 'monthly' ? 'This month'
-          : 'This period';
-      }
-
-      const customEl = document.getElementById(`budget-period-${slot}-custom-btn`);
-      if (customEl) customEl.hidden = isAll;
-    }
+  function syncBudgetSheetPeriods() {
+    budgetComparePeriods = getBudgetSheetPeriods();
+    syncBudgetSheetRangeControls();
   }
 
-  function setBudgetCompareType(slot, value) {
-    const tf = normalizeBudgetTimeframe(value);
-    const type = BUDGET_TF_TO_APP[tf] || 'monthly';
-    budgetComparePeriods[slot] = { type, offset: 0, customRange: null };
-    renderBudget();
+  function currentBudgetPeriodIndex() {
+    const idx = budgetComparePeriods.findIndex(p => budgetPeriodTiming(p) === 'current');
+    if (idx >= 0) return idx;
+    return Math.max(0, budgetComparePeriods.length - 1);
   }
 
-  function shiftIsoDateRange(range, direction) {
-    const start = startOfDay(new Date(`${range.start}T12:00:00`));
-    const end = startOfDay(new Date(`${range.end}T12:00:00`));
-    const days = Math.max(1, Math.round((end - start) / 86400000) + 1);
-    start.setDate(start.getDate() + direction * days);
-    end.setDate(end.getDate() + direction * days);
-    return { start: timeToLocalIso(start), end: timeToLocalIso(end) };
+  function currentBudgetPeriod() {
+    return budgetComparePeriods[currentBudgetPeriodIndex()] || null;
   }
 
-  function shiftBudgetComparePeriod(slot, direction) {
-    const period = budgetComparePeriods[slot];
-    if (!period) return;
-    if (period.type === 'all' && !period.customRange) return;
-    if (period.customRange) {
-      period.customRange = shiftIsoDateRange(period.customRange, direction);
-    } else {
-      period.offset = (period.offset || 0) - direction;
-    }
-    renderBudget();
+  function budgetHistoryRangeLabel() {
+    if (!budgetComparePeriods.length) return '';
+    const first = budgetPeriodShortLabel(budgetComparePeriods[0]);
+    const last = budgetPeriodShortLabel(budgetComparePeriods[budgetComparePeriods.length - 1]);
+    return first && last && first !== last ? `${first} – ${last}` : (last || first || '');
   }
 
-  function jumpBudgetCompareToCurrent(slot) {
-    const period = budgetComparePeriods[slot];
-    if (!period) return;
-    const type = period.type === 'all' ? 'monthly' : period.type;
-    budgetComparePeriods[slot] = { type, offset: 0, customRange: null };
-    renderBudget();
+  function captureBudgetSheetScroll() {
+    const out = {};
+    document.querySelectorAll('#panel-budget .budget-sheet-scroll').forEach(el => {
+      out[el.id] = el.scrollLeft;
+    });
+    return out;
   }
 
-  function openBudgetPeriodModal(slot) {
-    const period = budgetComparePeriods[slot];
-    if (!period || (period.type === 'all' && !period.customRange)) return;
-    const range = getBudgetPeriodActiveRange(period);
-    if (!range) return;
-    budgetPeriodModalSlot = slot;
-    document.getElementById('budget-period-start').value = range.start;
-    document.getElementById('budget-period-end').value = range.end;
-    openModal('modal-budget-period');
+  function sizeBudgetSheetView(el) {
+    if (!el) return;
+    el.style.setProperty('--budget-sheet-view', `${el.clientWidth}px`);
   }
 
-  function applyBudgetPeriodRange() {
-    const start = document.getElementById('budget-period-start').value;
-    const end = document.getElementById('budget-period-end').value;
-    if (!start || !end) {
-      alert('Please choose both a start date and an end date.');
+  function scrollBudgetSheetToCurrent(el) {
+    const currentTh = el.querySelector('th.budget-period-group-current');
+    if (!currentTh) {
+      el.scrollLeft = 0;
       return;
     }
-    if (start > end) {
-      alert('Start date must be on or before the end date.');
-      return;
-    }
-    budgetComparePeriods[budgetPeriodModalSlot].customRange = { start, end };
-    closeModal('modal-budget-period');
-    renderBudget();
+    const cadence = el.querySelector('th.budget-col-cadence');
+    const elRect = el.getBoundingClientRect();
+    const thRect = currentTh.getBoundingClientRect();
+    const stickyRight = cadence ? cadence.getBoundingClientRect().right : elRect.left;
+    const nextLeft = el.scrollLeft + (thRect.left - stickyRight);
+    const max = Math.max(0, el.scrollWidth - el.clientWidth);
+    el.scrollLeft = Math.max(0, Math.min(max, nextLeft));
+  }
+
+  function restoreBudgetSheetScroll(prev) {
+    document.querySelectorAll('#panel-budget .budget-sheet-scroll').forEach(el => {
+      sizeBudgetSheetView(el);
+      if (budgetSheetDidScroll && prev && prev[el.id] != null) {
+        el.scrollLeft = prev[el.id];
+      } else {
+        scrollBudgetSheetToCurrent(el);
+      }
+    });
+  }
+
+  function bindBudgetSheetScroll() {
+    document.querySelectorAll('#panel-budget .budget-sheet-scroll').forEach(el => {
+      if (el.dataset.scrollBound) return;
+      el.dataset.scrollBound = '1';
+      el.addEventListener('scroll', () => { budgetSheetDidScroll = true; }, { passive: true });
+      bindBudgetSheetDragPan(el);
+      if (typeof ResizeObserver === 'function') {
+        new ResizeObserver(() => sizeBudgetSheetView(el)).observe(el);
+      }
+      window.addEventListener('resize', () => sizeBudgetSheetView(el));
+    });
+  }
+
+  function budgetSheetPanIgnored(target) {
+    return !!target.closest('input, select, textarea, button, a, label, option, .txn-inline-actions, .actions-cell');
+  }
+
+  function budgetSheetHitScrollbar(el, e) {
+    const rect = el.getBoundingClientRect();
+    const xBar = el.offsetWidth - el.clientWidth;
+    const yBar = el.offsetHeight - el.clientHeight;
+    return (xBar > 0 && e.clientX >= rect.right - xBar) ||
+           (yBar > 0 && e.clientY >= rect.bottom - yBar);
+  }
+
+  function bindBudgetSheetDragPan(el) {
+    let drag = null;
+
+    const stopDrag = (e) => {
+      if (!drag || (e && e.pointerId != null && e.pointerId !== drag.pointerId)) return;
+      const moved = drag.moved;
+      const id = drag.pointerId;
+      drag = null;
+      el.classList.remove('budget-sheet-dragging');
+      if (moved) el.dataset.justDragged = '1';
+      if (typeof el.hasPointerCapture === 'function' && el.hasPointerCapture(id)) {
+        try { el.releasePointerCapture(id); } catch (_) {}
+      }
+    };
+
+    el.addEventListener('pointerdown', (e) => {
+      if (e.button != null && e.button !== 0) return;
+      if (budgetSheetPanIgnored(e.target)) return;
+      if (budgetSheetHitScrollbar(el, e)) return;
+      drag = {
+        pointerId: e.pointerId,
+        startX: e.clientX,
+        startScroll: el.scrollLeft,
+        moved: false
+      };
+    });
+
+    el.addEventListener('pointermove', (e) => {
+      if (!drag || e.pointerId !== drag.pointerId) return;
+      const dx = e.clientX - drag.startX;
+      if (!drag.moved) {
+        if (Math.abs(dx) < 6) return;
+        drag.moved = true;
+        el.classList.add('budget-sheet-dragging');
+        try { el.setPointerCapture(e.pointerId); } catch (_) {}
+      }
+      el.scrollLeft = drag.startScroll - dx;
+      e.preventDefault();
+    }, { passive: false });
+
+    el.addEventListener('pointerup', stopDrag);
+    el.addEventListener('pointercancel', stopDrag);
+    el.addEventListener('lostpointercapture', stopDrag);
+
+    el.addEventListener('click', (e) => {
+      if (!el.dataset.justDragged) return;
+      delete el.dataset.justDragged;
+      e.preventDefault();
+      e.stopPropagation();
+    }, true);
   }
 
   function defaultBudgetHistoryFromIso() {
@@ -5592,23 +5663,237 @@
     return timeToLocalIso(startOfDay(d));
   }
 
+  function syncBudgetHistoryControls() {
+    const today = timeToLocalIso(startOfDay(new Date()));
+    document.querySelectorAll('#bs-budget-history-preset').forEach(el => {
+      if (el.value !== budgetHistoryPreset) el.value = budgetHistoryPreset;
+    });
+    document.querySelectorAll('#bs-budget-history-from').forEach(el => {
+      el.max = today;
+      el.hidden = budgetHistoryPreset !== 'from';
+      if (budgetHistoryPreset === 'from') el.value = budgetHistoryFrom || defaultBudgetHistoryFromIso();
+    });
+  }
+
   function setBudgetHistoryRange(value) {
     budgetHistoryPreset = value || '6';
-    const fromEl = document.getElementById('budget-history-from');
-    if (fromEl) {
-      fromEl.hidden = budgetHistoryPreset !== 'from';
-      fromEl.max = timeToLocalIso(startOfDay(new Date()));
-      if (budgetHistoryPreset === 'from' && !budgetHistoryFrom) {
-        budgetHistoryFrom = defaultBudgetHistoryFromIso();
-        fromEl.value = budgetHistoryFrom;
-      }
+    if (budgetHistoryPreset === 'from' && !budgetHistoryFrom) {
+      budgetHistoryFrom = defaultBudgetHistoryFromIso();
     }
+    syncBudgetHistoryControls();
     renderBudgetHistoryChart();
+    updateBsChartTabHeader();
   }
 
   function setBudgetHistoryFrom(value) {
     budgetHistoryFrom = value || '';
     renderBudgetHistoryChart();
+    updateBsChartTabHeader();
+  }
+
+  function getBudgetSheetPeriodType() {
+    const allowed = ['weekly', 'biweekly', 'bimonthly', 'monthly', 'yearly'];
+    return allowed.includes(budgetSheetPeriodType) ? budgetSheetPeriodType : 'monthly';
+  }
+
+  function setBudgetSheetCadence(value) {
+    const allowed = ['weekly', 'biweekly', 'bimonthly', 'monthly', 'yearly'];
+    budgetSheetPeriodType = allowed.includes(value) ? value : 'monthly';
+    budgetSheetFromIso = '';
+    budgetSheetToIso = '';
+    budgetSheetDidScroll = false;
+    renderBudget();
+  }
+
+  function budgetSheetPickerOffsetSpan(type) {
+    if (type === 'yearly') return { past: 20, ahead: 10 };
+    if (type === 'monthly') return { past: 20 * 12, ahead: 10 * 12 };
+    if (type === 'bimonthly') return { past: 10 * 24, ahead: 5 * 24 };
+    if (type === 'weekly') return { past: 3 * 52, ahead: 52 };
+    if (type === 'biweekly') return { past: 3 * 26, ahead: 26 };
+    return { past: 24, ahead: 6 };
+  }
+
+  function budgetSheetPickerLabel(type, offset) {
+    if (type === 'weekly') {
+      const range = getBudgetCompareRange(type, offset);
+      if (!range) return budgetPeriodTitle({ type, offset, customRange: null });
+      const weekStart = startOfWeekSunday(new Date(`${range.start}T12:00:00`));
+      const yearStart = startOfWeekSunday(new Date(weekStart.getFullYear(), 0, 1));
+      const weekNo = Math.round((weekStart.getTime() - yearStart.getTime()) / (7 * 86400000)) + 1;
+      return `W${weekNo} · ${isoToDisplayDate(range.start)}`;
+    }
+    if (type === 'biweekly') {
+      const range = getBudgetCompareRange(type, offset);
+      return range ? formatAppPeriodRangeLabel(range) : budgetPeriodTitle({ type, offset, customRange: null });
+    }
+    return budgetPeriodTitle({ type, offset, customRange: null });
+  }
+
+  function listBudgetSheetPickerOptions(type) {
+    const { past, ahead } = budgetSheetPickerOffsetSpan(type);
+    const opts = [];
+    for (let off = past; off >= -ahead; off--) {
+      const range = getBudgetCompareRange(type, off);
+      if (!range) continue;
+      opts.push({
+        value: range.start,
+        label: budgetSheetPickerLabel(type, off),
+        offset: off,
+      });
+    }
+    return opts;
+  }
+
+  function fillBudgetSheetRangeSelect(el, type, selectedIso) {
+    if (!el) return;
+    const selected = selectedIso || '';
+    const needsRebuild = el.dataset.cadence !== type || !el.options.length;
+    if (needsRebuild) {
+      const options = listBudgetSheetPickerOptions(type);
+      const hasSelected = options.some(o => o.value === selected);
+      let html = options.map(o =>
+        `<option value="${escAttr(o.value)}"${o.value === selected ? ' selected' : ''}>${escHtml(o.label)}</option>`
+      ).join('');
+      if (selected && !hasSelected) {
+        html = `<option value="${escAttr(selected)}" selected>${escHtml(budgetSheetPickerLabel(type, offsetFromPeriodIso(type, selected)))}</option>` + html;
+      }
+      el.innerHTML = html;
+      el.dataset.cadence = type;
+    } else if (selected && ![...el.options].some(o => o.value === selected)) {
+      const opt = document.createElement('option');
+      opt.value = selected;
+      opt.textContent = budgetSheetPickerLabel(type, offsetFromPeriodIso(type, selected));
+      el.insertBefore(opt, el.firstChild);
+    }
+    if (selected) el.value = selected;
+  }
+
+  function defaultBudgetSheetFromIso() {
+    const range = getBudgetCompareRange(getBudgetSheetPeriodType(), BUDGET_SHEET_DEFAULT_PAST);
+    return range?.start || defaultBudgetHistoryFromIso();
+  }
+
+  function defaultBudgetSheetToIso() {
+    const range = getBudgetCompareRange(getBudgetSheetPeriodType(), -BUDGET_SHEET_DEFAULT_AHEAD);
+    return range?.start || timeToLocalIso(startOfDay(new Date()));
+  }
+
+  function resolvedBudgetSheetFromIso() {
+    return budgetSheetFromIso || defaultBudgetSheetFromIso();
+  }
+
+  function resolvedBudgetSheetToIso() {
+    return budgetSheetToIso || defaultBudgetSheetToIso();
+  }
+
+  function budgetSheetPickerBoundIso(offset) {
+    return getBudgetCompareRange(getBudgetSheetPeriodType(), offset)?.start || '';
+  }
+
+  function offsetFromPeriodIso(type, iso) {
+    const d = new Date(`${iso}T12:00:00`);
+    if (Number.isNaN(d.getTime())) return 0;
+    const today = startOfDay(new Date());
+    if (type === 'yearly') return today.getFullYear() - d.getFullYear();
+    if (type === 'weekly') {
+      const cur = startOfWeekSunday(today);
+      const start = startOfWeekSunday(d);
+      return Math.round((cur.getTime() - start.getTime()) / (7 * 86400000));
+    }
+    if (type === 'biweekly') {
+      const weekStart = startOfWeekSunday(today);
+      const epoch = startOfWeekSunday(new Date(today.getFullYear(), 0, 1));
+      const curBlock = Math.floor(Math.round((weekStart.getTime() - epoch.getTime()) / 86400000) / 14);
+      const start = startOfWeekSunday(d);
+      const startBlock = Math.floor(Math.round((start.getTime() - epoch.getTime()) / 86400000) / 14);
+      return curBlock - startBlock;
+    }
+    if (type === 'bimonthly') {
+      const curHalf = today.getDate() >= 16 ? 1 : 0;
+      const dHalf = d.getDate() >= 16 ? 1 : 0;
+      return (today.getFullYear() - d.getFullYear()) * 24
+        + (today.getMonth() - d.getMonth()) * 2
+        + (curHalf - dHalf);
+    }
+    return (today.getFullYear() - d.getFullYear()) * 12 + (today.getMonth() - d.getMonth());
+  }
+
+  function periodIsoToPickerValue(type, iso) {
+    if (!iso) return '';
+    if (type === 'yearly') return iso.slice(0, 4);
+    if (type === 'monthly') return iso.slice(0, 7);
+    return iso;
+  }
+
+  function pickerValueToPeriodIso(type, value) {
+    if (!value) return '';
+    if (type === 'yearly') return `${value}-01-01`;
+    if (type === 'monthly') return /^\d{4}-\d{2}$/.test(value) ? `${value}-01` : value;
+    return value;
+  }
+
+  function normalizeBudgetSheetRange() {
+    const type = getBudgetSheetPeriodType();
+    let startOff = offsetFromPeriodIso(type, resolvedBudgetSheetFromIso());
+    let endOff = offsetFromPeriodIso(type, resolvedBudgetSheetToIso());
+    if (startOff < endOff) {
+      const tmp = startOff;
+      startOff = endOff;
+      endOff = tmp;
+    }
+    budgetSheetRangeCapped = false;
+    if (startOff - endOff + 1 > BUDGET_SHEET_MAX_PERIODS) {
+      endOff = startOff - (BUDGET_SHEET_MAX_PERIODS - 1);
+      budgetSheetRangeCapped = true;
+      const endRange = getBudgetCompareRange(type, endOff);
+      if (endRange) budgetSheetToIso = endRange.start;
+    }
+    return { type, startOff, endOff };
+  }
+
+  function syncBudgetSheetRangeControls() {
+    const type = getBudgetSheetPeriodType();
+    const first = budgetComparePeriods[0];
+    const last = budgetComparePeriods[budgetComparePeriods.length - 1];
+    const fromIso = first
+      ? (getBudgetCompareRange(type, first.offset)?.start || resolvedBudgetSheetFromIso())
+      : resolvedBudgetSheetFromIso();
+    const toIso = last
+      ? (getBudgetCompareRange(type, last.offset)?.start || resolvedBudgetSheetToIso())
+      : resolvedBudgetSheetToIso();
+    const cadenceEl = document.getElementById('budget-sheet-cadence');
+    if (cadenceEl && cadenceEl.value !== type) cadenceEl.value = type;
+    fillBudgetSheetRangeSelect(document.getElementById('budget-range-from'), type, fromIso);
+    fillBudgetSheetRangeSelect(document.getElementById('budget-range-to'), type, toIso);
+    const note = document.getElementById('budget-range-cap-note');
+    if (note) note.hidden = !budgetSheetRangeCapped;
+  }
+
+  function setBudgetSheetFrom(value) {
+    const type = getBudgetSheetPeriodType();
+    budgetSheetFromIso = pickerValueToPeriodIso(type, value) || defaultBudgetSheetFromIso();
+    const startOff = offsetFromPeriodIso(type, budgetSheetFromIso);
+    const endOff = offsetFromPeriodIso(type, resolvedBudgetSheetToIso());
+    if (startOff < endOff) {
+      const range = getBudgetCompareRange(type, startOff);
+      if (range) budgetSheetToIso = range.start;
+    }
+    budgetSheetDidScroll = false;
+    renderBudget();
+  }
+
+  function setBudgetSheetTo(value) {
+    const type = getBudgetSheetPeriodType();
+    budgetSheetToIso = pickerValueToPeriodIso(type, value) || defaultBudgetSheetToIso();
+    const startOff = offsetFromPeriodIso(type, resolvedBudgetSheetFromIso());
+    const endOff = offsetFromPeriodIso(type, budgetSheetToIso);
+    if (startOff < endOff) {
+      const range = getBudgetCompareRange(type, endOff);
+      if (range) budgetSheetFromIso = range.start;
+    }
+    budgetSheetDidScroll = false;
+    renderBudget();
   }
 
   function getBudgetHistoryMonths() {
@@ -5638,6 +5923,15 @@
       if (month > 11) { month = 0; year += 1; }
     }
     return months;
+  }
+
+  function getBudgetSheetPeriods() {
+    const { type, startOff, endOff } = normalizeBudgetSheetRange();
+    const periods = [];
+    for (let off = startOff; off >= endOff; off--) {
+      periods.push({ type, offset: off, customRange: null });
+    }
+    return periods;
   }
 
   function computeBudgetHistoryPoints() {
@@ -5670,16 +5964,9 @@
   }
 
   function renderBudgetHistoryChart() {
-    const svg = document.getElementById('budget-history-chart');
+    const svg = document.getElementById('bs-budget-history-chart');
     if (!svg) return;
-    const fromEl = document.getElementById('budget-history-from');
-    if (fromEl) {
-      fromEl.max = timeToLocalIso(startOfDay(new Date()));
-      fromEl.hidden = budgetHistoryPreset !== 'from';
-      if (budgetHistoryPreset === 'from') fromEl.value = budgetHistoryFrom || defaultBudgetHistoryFromIso();
-    }
-    const presetEl = document.getElementById('budget-history-preset');
-    if (presetEl && presetEl.value !== budgetHistoryPreset) presetEl.value = budgetHistoryPreset;
+    syncBudgetHistoryControls();
 
     const points = computeBudgetHistoryPoints();
     const W = 720;
@@ -5692,8 +5979,8 @@
     const chartH = H - padT - padB;
 
     if (!points.length) {
-      svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-      svg.innerHTML = `<text x="${W / 2}" y="${H / 2}" text-anchor="middle" font-size="12" fill="#9ca3af">No history to show</text>`;
+      const empty = `<text x="${W / 2}" y="${H / 2}" text-anchor="middle" font-size="12" fill="#9ca3af">No history to show</text>`;
+      setSvgContent(svg, `0 0 ${W} ${H}`, empty);
       return;
     }
 
@@ -5729,8 +6016,7 @@
       html += `<text x="${xFor(i).toFixed(2)}" y="${H - 12}" text-anchor="middle" font-size="10" fill="#6b7280">${escHtml(p.label)}</text>`;
     });
 
-    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-    svg.innerHTML = html;
+    setSvgContent(svg, `0 0 ${W} ${H}`, html);
   }
 
   function renderBudgetDisplayRow(row, i, kind, rowOpts = {}) {
@@ -5745,8 +6031,8 @@
       ? `<button class="action-btn del" onclick="deleteBudget(${i})">Delete</button>`
       : '';
     return `<tr ${rowAttrs}>
-      <td style="font-weight:600">${escHtml(row.category)}</td>
-      <td><span style="font-size:11px;color:var(--text-muted)">${escHtml(formatBudgetTimeframeLabel(row.timeframe))}</span></td>
+      <td class="budget-col-cat" style="font-weight:600">${escHtml(row.category)}</td>
+      <td class="budget-col-cadence"><span style="font-size:11px;color:var(--text-muted)">${escHtml(formatBudgetTimeframeLabel(row.timeframe))}</span></td>
       ${renderBudgetPeriodCells(periods, kind)}
       <td class="actions-cell" onclick="event.stopPropagation()">
         ${deleteBtn}
@@ -5757,15 +6043,13 @@
   function renderBudgetNewEmptyRow(kind, rowOpts = {}) {
     const { prefix = 'budget' } = rowOpts;
     const label = kind === 'income' ? 'New income category…' : 'New expense category…';
+    const periodDashes = budgetComparePeriods.map(() =>
+      `<td class="num">—</td><td class="num">—</td><td class="num">—</td>`
+    ).join('');
     return `<tr class="txn-row-new" onclick="startBudgetAdd('${kind}', '${prefix}')" title="Click to add a budget category">
-      <td>${label}</td>
-      <td>—</td>
-      <td class="num">—</td>
-      <td class="num">—</td>
-      <td class="num">—</td>
-      <td class="num">—</td>
-      <td class="num">—</td>
-      <td class="num">—</td>
+      <td class="budget-col-cat">${label}</td>
+      <td class="budget-col-cadence">—</td>
+      ${periodDashes}
       <td></td>
     </tr>`;
   }
@@ -5775,8 +6059,8 @@
     const fixedKind = lockKind || kind;
     const emptyPeriods = budgetComparePeriods.map(() => ({ budgeted: '', actual: 0, remaining: 0 }));
     return `<tr class="txn-row-editing">
-      <td><input class="txn-inline-input" id="budget-inline-cat" placeholder="Category name"><input type="hidden" id="budget-inline-kind" value="${escAttr(fixedKind)}"></td>
-      <td><select class="txn-inline-input" id="budget-inline-timeframe">${budgetTimeframeOptions(defaultBudgetCadence())}</select></td>
+      <td class="budget-col-cat"><input class="txn-inline-input" id="budget-inline-cat" placeholder="Category name"><input type="hidden" id="budget-inline-kind" value="${escAttr(fixedKind)}"></td>
+      <td class="budget-col-cadence"><select class="txn-inline-input" id="budget-inline-timeframe">${budgetTimeframeOptions(defaultBudgetCadence())}</select></td>
       ${renderBudgetPeriodCells(emptyPeriods, kind, { editing: true, placeholder: true })}
       <td class="actions-cell">
         <div class="txn-inline-actions">
@@ -5796,8 +6080,8 @@
       ? `<button class="txn-inline-btn del" onclick="deleteBudget(${i})">Delete</button>`
       : '';
     return `<tr class="txn-row-editing">
-      <td><input class="txn-inline-input" id="budget-inline-cat" value="${escAttr(row.category)}"><input type="hidden" id="budget-inline-kind" value="${escAttr(fixedKind)}"></td>
-      <td><select class="txn-inline-input" id="budget-inline-timeframe">${budgetTimeframeOptions(row.timeframe)}</select></td>
+      <td class="budget-col-cat"><input class="txn-inline-input" id="budget-inline-cat" value="${escAttr(row.category)}"><input type="hidden" id="budget-inline-kind" value="${escAttr(fixedKind)}"></td>
+      <td class="budget-col-cadence"><select class="txn-inline-input" id="budget-inline-timeframe">${budgetTimeframeOptions(row.timeframe)}</select></td>
       ${renderBudgetPeriodCells(periods, kind, { editing: true })}
       <td class="actions-cell">
         <div class="txn-inline-actions">
@@ -8708,17 +8992,19 @@
   function readBudgetInlineRec() {
     const kindEl = document.getElementById('budget-inline-kind');
     const selectedKind = kindEl?.value ?? kindEl?.selectedOptions?.[0]?.value ?? budgetEditingKind;
-    const p0 = parseFloat(document.getElementById('budget-inline-budgeted-0')?.value) || 0;
-    const p1 = parseFloat(document.getElementById('budget-inline-budgeted-1')?.value) || 0;
-    const key0 = budgetPeriodKey(budgetComparePeriods[0]);
-    const key1 = budgetPeriodKey(budgetComparePeriods[1]);
-    const period_amounts = { [key0]: p0 };
-    if (key1 !== key0) period_amounts[key1] = p1;
+    const period_amounts = {};
+    let currentBudgeted = 0;
+    budgetComparePeriods.forEach((period, slot) => {
+      const key = budgetPeriodKey(period);
+      const val = parseFloat(document.getElementById(`budget-inline-budgeted-${slot}`)?.value) || 0;
+      if (key) period_amounts[key] = val;
+      if (budgetPeriodTiming(period) === 'current') currentBudgeted = val;
+    });
     return {
       category:  document.getElementById('budget-inline-cat').value.trim(),
       kind: selectedKind === 'income' ? 'income' : 'expense',
       timeframe: document.getElementById('budget-inline-timeframe').value,
-      budgeted:  p0,
+      budgeted:  currentBudgeted,
       period_amounts,
     };
   }
@@ -9759,6 +10045,71 @@
      BALANCE SHEET CHARTS — pie charts for income and expenses
   ══════════════════════════════════════════════════════ */
   const PIE_COLORS = ['#2563eb', '#7c3aed', '#ea580c', '#d97706', '#db2777', '#16a34a', '#0891b2', '#9ca3af'];
+  const BS_PHONE_CHARTS_MQ = '(max-width: 767px), (max-width: 900px) and (pointer: coarse)';
+
+  function isPhoneChartsViewport() {
+    return window.matchMedia(BS_PHONE_CHARTS_MQ).matches;
+  }
+
+  function setSvgContent(svg, viewBox, html) {
+    if (!svg) return;
+    const wrap = svg.parentElement;
+    const id = svg.id || '';
+    const vb = viewBox || svg.getAttribute('viewBox') || '0 0 380 200';
+    const markup = `<svg id="${id}" viewBox="${vb}" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">${html}</svg>`;
+    if (wrap) {
+      wrap.innerHTML = markup;
+    } else {
+      svg.setAttribute('viewBox', vb);
+      svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      svg.innerHTML = html;
+    }
+  }
+
+  function rerenderVisibleBsCharts() {
+    const {
+      totalIncome, totalExpenses, incomeCategories, expenseCategories,
+    } = computeBalanceSheetTotals();
+    const { income: chartIncome, expenses: chartExpenses } = periodTransactionsForBudgetCategories();
+    buildDailyPlChart(chartIncome, chartExpenses);
+    buildNetWorthChart();
+    renderBudgetHistoryChart();
+    buildCategoryBreakdownPie('expense-pie', expenseCategories.map(r => ({ cat: r.category, amt: r.actual })), {
+      total: totalExpenses,
+      centerColor: '#dc2626',
+      emptyText: 'No expenses',
+      valueFn: t => t.amt,
+    });
+    buildCategoryBreakdownPie('income-pie', incomeCategories.map(r => ({ cat: r.category, amt: r.actual })), {
+      total: totalIncome,
+      centerColor: '#16a34a',
+      emptyText: 'No income',
+      valueFn: t => t.amt,
+    });
+    updateBsChartTabHeader();
+  }
+
+  function openBsChartsSheet() {
+    const sheet = document.getElementById('bs-charts-sheet');
+    const fab = document.getElementById('bs-charts-fab');
+    if (!sheet || !isPhoneChartsViewport()) return;
+    sheet.classList.add('open');
+    sheet.setAttribute('aria-modal', 'true');
+    document.body.classList.add('bs-charts-open');
+    if (fab) fab.setAttribute('aria-expanded', 'true');
+    requestAnimationFrame(() => rerenderVisibleBsCharts());
+  }
+
+  function closeBsChartsSheet() {
+    const sheet = document.getElementById('bs-charts-sheet');
+    const fab = document.getElementById('bs-charts-fab');
+    if (sheet) {
+      sheet.classList.remove('open');
+      sheet.setAttribute('aria-modal', 'false');
+    }
+    document.body.classList.remove('bs-charts-open');
+    if (fab) fab.setAttribute('aria-expanded', 'false');
+  }
 
   function switchBsChartTab(tab) {
     bsChartTab = tab;
@@ -9769,7 +10120,19 @@
       panel.classList.toggle('active', panel.id === `bs-chart-${tab}`);
     });
     updateBsChartTabHeader();
+    if (isPhoneChartsViewport()) openBsChartsSheet();
+    else requestAnimationFrame(rerenderVisibleBsCharts);
   }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeBsChartsSheet();
+  });
+  window.addEventListener('resize', () => {
+    if (!isPhoneChartsViewport()) closeBsChartsSheet();
+    else if (document.body.classList.contains('bs-charts-open')) {
+      requestAnimationFrame(rerenderVisibleBsCharts);
+    }
+  });
 
   function updateBsChartTabHeader() {
     const { totalIncome, totalExpenses, profitLoss } = computeBalanceSheetTotals();
@@ -9786,6 +10149,12 @@
       titleEl.textContent = 'Net Worth Trend';
       totalEl.className = `section-total ${netWorth >= 0 ? 'income' : 'expenses'}`;
       totalEl.textContent = fmtMoney(netWorth, { allowNegative: true, signed: true });
+    } else if (bsChartTab === 'budget-vs-actual') {
+      const points = computeBudgetHistoryPoints();
+      const last = points[points.length - 1];
+      titleEl.textContent = 'Budget vs Actual';
+      totalEl.className = 'section-total';
+      totalEl.textContent = fmtMoney(last ? last.actual : 0);
     } else if (bsChartTab === 'expense-breakdown') {
       titleEl.textContent = 'Expense Breakdown';
       totalEl.className = 'section-total expenses';
@@ -9871,8 +10240,7 @@
 
     const points = computeNetWorthHistory();
     if (!points.length) {
-      svg.setAttribute('viewBox', '0 0 380 200');
-      svg.innerHTML = '<text x="190" y="104" text-anchor="middle" font-size="12" fill="#9ca3af">No transaction data</text>';
+      setSvgContent(svg, '0 0 380 200', '<text x="190" y="104" text-anchor="middle" font-size="12" fill="#9ca3af">No transaction data</text>');
       return;
     }
 
@@ -9922,8 +10290,7 @@
       html += `<text x="${xFor(i).toFixed(2)}" y="${H - 10}" text-anchor="middle" font-size="9" fill="#6b7280">${escHtml(p.label)}</text>`;
     });
 
-    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-    svg.innerHTML = html;
+    setSvgContent(svg, `0 0 ${W} ${H}`, html);
   }
 
   function buildDailyPlChart(income, expenses) {
@@ -9932,8 +10299,7 @@
 
     const points = computeDailyProfitLoss(income, expenses);
     if (!points.length) {
-      svg.setAttribute('viewBox', '0 0 380 200');
-      svg.innerHTML = '<text x="190" y="104" text-anchor="middle" font-size="12" fill="#9ca3af">No transaction data</text>';
+      setSvgContent(svg, '0 0 380 200', '<text x="190" y="104" text-anchor="middle" font-size="12" fill="#9ca3af">No transaction data</text>');
       return;
     }
 
@@ -9981,8 +10347,7 @@
       html += `<text x="${xFor(i).toFixed(2)}" y="${H - 10}" text-anchor="middle" font-size="9" fill="#6b7280">${escHtml(p.label)}</text>`;
     });
 
-    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-    svg.innerHTML = html;
+    setSvgContent(svg, `0 0 ${W} ${H}`, html);
   }
 
   function buildCategoryBreakdownPie(svgId, txns, opts) {
@@ -9991,8 +10356,7 @@
     const { total = 0, centerColor = '#2563eb', emptyText = 'No data', valueFn } = opts;
 
     if (!txns.length || total <= 0) {
-      svg.setAttribute('viewBox', '0 0 380 200');
-      svg.innerHTML = `<text x="190" y="104" text-anchor="middle" font-size="12" fill="#9ca3af">${escHtml(emptyText)}</text>`;
+      setSvgContent(svg, '0 0 380 200', `<text x="190" y="104" text-anchor="middle" font-size="12" fill="#9ca3af">${escHtml(emptyText)}</text>`);
       return;
     }
 
@@ -10033,8 +10397,7 @@
       paths += `<text x="372" y="${ly + 7}" font-size="10" fill="#6b7280" text-anchor="end">${pct}%</text>`;
       ly += 19;
     });
-    svg.setAttribute('viewBox', '0 0 380 200');
-    svg.innerHTML = paths;
+    setSvgContent(svg, '0 0 380 200', paths);
   }
 
   function buildExpensePie(expenseTxns = [], totalExpenses = 0) {
@@ -10393,7 +10756,6 @@
     syncAppPeriodState();
   }
   syncAppPeriodUI();
-  syncBudgetPeriodUI();
 
   loadTxnDateSortPreference();
 

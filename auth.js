@@ -139,8 +139,17 @@ function parseCookies(req) {
   return out;
 }
 
+const SCRYPT_HASH_HEX = /^[0-9a-f]{128}$/i;
+const SCRYPT_SALT_HEX = /^[0-9a-f]{32}$/i;
+
+// 64-byte scrypt (Node defaults: N=16384, r=8, p=1) as 128 hex chars; 16-byte salt as 32 hex chars.
 function hashPassword(password, salt) {
   return crypto.scryptSync(String(password), salt, 64).toString('hex');
+}
+
+function looksLikeStoredHash(user) {
+  return SCRYPT_HASH_HEX.test(String(user?.password_hash || ''))
+    && SCRYPT_SALT_HEX.test(String(user?.password_salt || ''));
 }
 
 function createSalt() {
@@ -262,12 +271,18 @@ function deleteSessionsForUser(userId) {
 }
 
 function verifyPassword(user, password) {
-  if (!user) return false;
-  const hash = hashPassword(password, user.password_salt);
-  const a = Buffer.from(hash, 'hex');
-  const b = Buffer.from(user.password_hash, 'hex');
-  if (a.length !== b.length) return false;
-  return crypto.timingSafeEqual(a, b);
+  if (!user || password == null || password === '') return false;
+  // Never treat leftover plaintext as a match; only scrypt hex rows can succeed.
+  if (!looksLikeStoredHash(user)) return false;
+  try {
+    const hash = hashPassword(password, user.password_salt);
+    const a = Buffer.from(hash, 'hex');
+    const b = Buffer.from(user.password_hash, 'hex');
+    if (a.length !== b.length) return false;
+    return crypto.timingSafeEqual(a, b);
+  } catch {
+    return false;
+  }
 }
 
 function createUser({ username, displayName, password, permissions, portfolios } = {}) {

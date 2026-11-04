@@ -5,7 +5,7 @@ A standalone sandbox of Finara you can run locally or host (for example on Rende
 This is a **demo of the real product only. Data is kept for 7 days.**
 
 - Sign **up** and Sign **in** stay (username + password). Each visitor creates their own account and only sees their own household.
-- Optional email on sign-up if they want to hear when the full app is available. Email is not required, and it is **not stored** on this server.
+- Optional email on sign-up if they want to know when they can buy Finara for their own computer. Email is not required, and it is **not stored** on this server.
 - Add real-looking accounts (your own bank names, balances, transactions) the same way as Finara.
 - Optional sample household (fake banks and merchants) if you want a filled-in demo.
 - Fake Plaid-style **Connect / Sync** — looks like bank linking, never calls Plaid, never needs API keys.
@@ -90,11 +90,11 @@ The sweep runs when the server starts and about once an hour. It only touches `f
 
 ## Launch notify email
 
-Sign-up can take an optional email if the visitor checks **Email me when the full app is available.** The checkbox starts unchecked. If they type an email but leave the box off, it is ignored.
+Sign-up can take an optional email if the visitor checks **Email me when I can buy Finara for my own computer.** The checkbox starts unchecked. If they type an email but leave the box off, it is ignored.
 
 When they opt in with a plausible address, the demo sends **one message to Alan** (`NOTIFY_EMAIL`, default `acdelgato@gmail.com`) with that address, username, and time — then forgets it. Nothing is written to the database or a file.
 
-The app does **not** keep a list of emails and has no admin screen for them. If mail is not configured, or sending fails, the demo account is still created. The visitor sees a note that the launch notice did not send and they can email Alan themselves.
+The app does **not** keep a list of emails and has no admin screen for them. If mail is not configured, or sending fails, the demo account is still created. The visitor sees a note that the notice did not send and they can email Alan themselves if they still want to know when Finara is for sale.
 
 Put secrets in `FinaraDemo/.env` (gitignored) or in the host’s env vars. Example for a Gmail app password:
 
