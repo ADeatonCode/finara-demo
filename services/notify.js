@@ -80,9 +80,9 @@ async function sendLaunchNotify({ email, username } = {}) {
   await withTimeout(transporter.sendMail({
     from: String(process.env.SMTP_USER).trim(),
     to: notifyRecipient(),
-    subject: 'Finara Demo — someone wants the full-app announcement',
+    subject: 'Finara Demo — someone wants to buy Finara for their own computer',
     text: [
-      'Someone opted in on the Finara demo to hear when the full app is available.',
+      'Someone opted in on the Finara demo to hear when they can buy Finara for their own computer.',
       '',
       `Visitor email: ${visitor}`,
       `Username: ${name}`,

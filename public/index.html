@@ -113,6 +113,68 @@
     font-weight: 600;
     padding: 8px 20px;
     line-height: 1.45;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 10px;
+  }
+  .demo-banner-offer {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 8px;
+  }
+  .demo-banner-link {
+    border: none;
+    background: none;
+    padding: 0;
+    color: #92400e;
+    font: inherit;
+    font-weight: 700;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+  }
+  .demo-banner-link:hover { color: #78350f; }
+  .demo-banner-notify-form {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .demo-banner-notify-form[hidden] { display: none !important; }
+  .demo-banner-notify-form input {
+    width: 168px;
+    height: 24px;
+    border: 1px solid #f4c46b;
+    border-radius: 5px;
+    padding: 0 8px;
+    font-size: 12px;
+    font-family: inherit;
+    color: #78350f;
+    background: #fff;
+  }
+  .demo-banner-notify-form button[type="submit"] {
+    height: 24px;
+    border: 1px solid #d97706;
+    background: #f59e0b;
+    color: #111827;
+    border-radius: 5px;
+    padding: 0 9px;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .demo-banner-notify-form button[type="submit"]:disabled {
+    opacity: 0.65;
+    cursor: default;
+  }
+  .demo-banner-done { font-weight: 500; }
+  .demo-banner-done[hidden],
+  .demo-banner-error[hidden] { display: none !important; }
+  .demo-banner-error {
+    color: #9a3412;
+    font-weight: 500;
   }
   .demo-notify-banner {
     background: #eff6ff;
@@ -1864,7 +1926,7 @@
       <div class="form-group" id="auth-notify-wrap" hidden>
         <label class="auth-notify-check" for="auth-notify">
           <input type="checkbox" id="auth-notify">
-          Email me when the full app is available.
+          Email me when I can buy Finara for my own computer.
         </label>
       </div>
       <button class="btn-primary auth-submit" type="submit" id="auth-submit-btn">Sign in</button>
@@ -1973,9 +2035,20 @@
      MAIN CONTENT
 ═══════════════════════════════════════════════════════════ -->
 <main class="main">
-  <div class="demo-app-banner">This is a demo of the real product only. Data is kept for 7 days.</div>
+  <div class="demo-app-banner" id="demo-app-banner">
+    <span>This is a demo of the real product only. Data is kept for 7 days.</span>
+    <span class="demo-banner-offer" id="demo-banner-offer">
+      <button type="button" class="demo-banner-link" id="demo-banner-notify-toggle" aria-expanded="false" aria-controls="demo-banner-notify-form" onclick="toggleBannerNotify()">Email me when I can buy Finara for my own computer.</button>
+      <form id="demo-banner-notify-form" class="demo-banner-notify-form" hidden onsubmit="submitBannerNotify(event)">
+        <input id="demo-banner-email" type="email" inputmode="email" placeholder="you@email.com" autocomplete="email" title="We do not keep your email on this demo server. If you opt in, a one-time notice goes to Alan." required>
+        <button type="submit" id="demo-banner-notify-btn">Notify me</button>
+      </form>
+      <span class="demo-banner-error" id="demo-banner-notify-error" hidden></span>
+      <span class="demo-banner-done" id="demo-banner-notify-done" hidden>Alan will get a one-time notice. We do not keep your email here.</span>
+    </span>
+  </div>
   <div class="demo-notify-banner" id="demo-notify-banner" hidden>
-    Your demo account is ready. We could not send the launch notice — email Alan at <a href="mailto:acdelgato@gmail.com">acdelgato@gmail.com</a> if you still want to hear when the full app is available.
+    Your demo account is ready. We could not send the notice — email Alan at <a href="mailto:acdelgato@gmail.com">acdelgato@gmail.com</a> if you still want to know when Finara is for sale.
   </div>
 
   <!-- ─────────────────────────────────────────────────────
@@ -3352,12 +3425,98 @@
     if (el) el.hidden = !show;
   }
 
+  function setBannerNotifyError(message) {
+    const el = document.getElementById('demo-banner-notify-error');
+    if (!el) return;
+    el.textContent = message || '';
+    el.hidden = !message;
+  }
+
+  function hideBannerNotifyOffer() {
+    const toggle = document.getElementById('demo-banner-notify-toggle');
+    const form = document.getElementById('demo-banner-notify-form');
+    const done = document.getElementById('demo-banner-notify-done');
+    if (toggle) toggle.hidden = true;
+    if (form) form.hidden = true;
+    if (done) done.hidden = true;
+    setBannerNotifyError('');
+  }
+
+  function showBannerNotifyDone() {
+    hideBannerNotifyOffer();
+    const done = document.getElementById('demo-banner-notify-done');
+    if (done) done.hidden = false;
+  }
+
+  function applyNotifyResult({ notify_requested, notify_sent } = {}) {
+    if (!notify_requested) return;
+    if (notify_sent) {
+      showBannerNotifyDone();
+      setNotifyFailedNote(false);
+    } else {
+      hideBannerNotifyOffer();
+      setNotifyFailedNote(true);
+    }
+  }
+
+  function toggleBannerNotify() {
+    const toggle = document.getElementById('demo-banner-notify-toggle');
+    const form = document.getElementById('demo-banner-notify-form');
+    if (!toggle || !form) return;
+    const open = form.hidden;
+    form.hidden = !open;
+    toggle.setAttribute('aria-expanded', String(open));
+    setBannerNotifyError('');
+    if (open) document.getElementById('demo-banner-email')?.focus();
+  }
+
+  async function submitBannerNotify(event) {
+    event.preventDefault();
+    const input = document.getElementById('demo-banner-email');
+    const email = String(input?.value || '').trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setBannerNotifyError('Enter a valid email address to be notified.');
+      input?.focus();
+      return;
+    }
+    const btn = document.getElementById('demo-banner-notify-btn');
+    if (btn) btn.disabled = true;
+    setBannerNotifyError('');
+    try {
+      const data = await API.post('/api/notify-launch', {
+        email,
+        notify_when_available: true,
+      });
+      applyNotifyResult(data);
+    } catch (e) {
+      setBannerNotifyError(e.message || 'Could not send the notice.');
+    } finally {
+      if (btn) btn.disabled = false;
+    }
+  }
+
+  function resetBannerNotifyOffer() {
+    const toggle = document.getElementById('demo-banner-notify-toggle');
+    const form = document.getElementById('demo-banner-notify-form');
+    const done = document.getElementById('demo-banner-notify-done');
+    const input = document.getElementById('demo-banner-email');
+    if (toggle) {
+      toggle.hidden = false;
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+    if (form) form.hidden = true;
+    if (done) done.hidden = true;
+    if (input) input.value = '';
+    setBannerNotifyError('');
+  }
+
   function showAuthScreen(needsSetup = false) {
     authNeedsSetup = needsSetup;
     authMode = needsSetup ? 'register' : 'login';
     document.body.classList.add('auth-locked');
     document.getElementById('auth-form')?.reset();
     setNotifyFailedNote(false);
+    resetBannerNotifyOffer();
     renderAuthMode();
     document.getElementById('auth-username')?.focus();
   }
@@ -3397,7 +3556,7 @@
       const data = await API.post(endpoint, payload);
       applyAuthContext(data);
       showAppShell(data.user);
-      setNotifyFailedNote(!!data.notify_requested && !data.notify_sent);
+      applyNotifyResult(data);
       await loadAppData();
       if (isRegisterMode()) await maybeOfferSampleHousehold();
     } catch (e) {

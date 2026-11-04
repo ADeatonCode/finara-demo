@@ -81,6 +81,7 @@ app.get('/api/health', (req, res) => {
 });
 
 app.use('/api/auth', require('./routes/auth'));
+app.use('/api/notify-launch', requireAuth, require('./routes/notify'));
 app.use('/api/accounts', requireAuth, requireDataPermission, require('./routes/accounts'));
 app.use('/api/account-types', requireAuth, requireDataPermission, require('./routes/accountTypes'));
 app.use('/api/transactions', requireAuth, requireDataPermission, require('./routes/transactions'));
