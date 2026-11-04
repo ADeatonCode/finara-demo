@@ -76,6 +76,10 @@ app.use(express.static(path.join(__dirname, 'public'), {
   },
 }));
 
+app.get('/api/health', (req, res) => {
+  res.json({ ok: true, service: 'finara-demo' });
+});
+
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/accounts', requireAuth, requireDataPermission, require('./routes/accounts'));
 app.use('/api/account-types', requireAuth, requireDataPermission, require('./routes/accountTypes'));

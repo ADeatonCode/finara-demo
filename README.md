@@ -32,7 +32,7 @@ Open **http://localhost:3001**
 
 Same split as Project TODO: Express on Render, static page on Lagoon. InfinityFree cannot run this Node server.
 
-See **`INFINITYFREE.md`** for the click-path (New Web Service → GitHub → `ADeatonCode/finara-demo` → `npm install` / `npm start`) and the zip extract folder `htdocs/projects/finara/`.
+See **`INFINITYFREE.md`** for the click-path (New Web Service → GitHub → `ADeatonCode/finara-demo` → `npm install` / `npm start`) and the zip extract folder `htdocs/projects/finara-demo/`.
 
 1. Web Service from this repo root (not a `backend/` folder).
 2. Build: `npm install`

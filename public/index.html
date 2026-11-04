@@ -3521,11 +3521,20 @@
     const headers = Object.assign({}, options.headers || {});
     const token = getSessionToken();
     if (token && !headers.Authorization) headers.Authorization = 'Bearer ' + token;
-    const res = await fetch(apiUrl(url), {
-      credentials: apiBase() ? 'include' : 'same-origin',
-      ...options,
-      headers,
-    });
+    let res;
+    try {
+      res = await fetch(apiUrl(url), {
+        credentials: apiBase() ? 'include' : 'same-origin',
+        ...options,
+        headers,
+      });
+    } catch (e) {
+      const base = apiBase();
+      if (!base) {
+        throw new Error('Demo API URL is not set. Check that config.js loaded.');
+      }
+      throw new Error('Could not reach the demo API at ' + base + '. The Render Web Service may be missing or still starting.');
+    }
     const data = await res.json().catch(() => ({}));
     if (res.status === 401 && !String(url).startsWith('/api/auth/')) {
       showAuthScreen(false);

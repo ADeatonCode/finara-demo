@@ -26,11 +26,11 @@ Create a **Web Service** from GitHub, the same click-path as TODO:
 
    | Key | Value |
    | --- | --- |
-   | `FRONTEND_ORIGIN` | `https://YOUR-SITE.infinityfreeapp.com` — your InfinityFree **origin only**, no trailing slash, no `/projects/finara/` |
+   | `FRONTEND_ORIGIN` | `https://acdelgato.infinityfreeapp.com` — InfinityFree **origin only**, no trailing slash, no `/projects/finara-demo/` |
    | `PORT` | leave to Render |
    | `NOTIFY_EMAIL` / `SMTP_*` | optional; only if you want launch-notify mail |
 
-   Example origin: `https://YOUR-SITE.infinityfreeapp.com` (the site itself + `/projects/finara/` is the page URL, not the CORS origin).
+   Example origin: `https://acdelgato.infinityfreeapp.com` (the site itself + `/projects/finara-demo/` is the page URL, not the CORS origin).
 9. Create the service. Suggested name: **`finara-demo`** so the URL is `https://finara-demo.onrender.com`. If Render assigns a different name, edit `config.js` in the zip (step 2).
 10. First hit after sleep can take 30–60 seconds. Success logs look like `Finara Demo running at http://localhost:…`, not a Vite build.
 
@@ -42,14 +42,14 @@ Ready zip: `finara-demo-infinityfree.zip` (files at the zip root).
 
 1. Extract the **contents** of the zip (not a wrapping folder) into:
 
-   **`htdocs/projects/finara/`**
+   **`htdocs/projects/finara-demo/`**
 
-   Public path: `/projects/finara/`
+   Public path: `/projects/finara-demo/`
 2. Confirm these files are in that folder:
 
    - `index.html` — demo UI
    - `config.js` — API base URL
-   - `.htaccess` — HTTPS + SPA rewrites under `/projects/finara/`
+   - `.htaccess` — HTTPS + SPA rewrites under `/projects/finara-demo/`
    - `sample-import.csv` — optional CSV example
 3. Open `config.js` and set the Render URL if your service name is not `finara-demo`:
 
@@ -62,10 +62,11 @@ Ready zip: `finara-demo-infinityfree.zip` (files at the zip root).
 
 ## 3. Check CORS + API
 
-1. Open `https://YOUR-SITE.infinityfreeapp.com/projects/finara/`
+1. Open `https://YOUR-SITE.infinityfreeapp.com/projects/finara-demo/`
 2. Sign up, then add an account or load the sample household.
-3. If the browser blocks requests, `FRONTEND_ORIGIN` on Render must match the site origin exactly (`https://…`, no path).
+3. If the browser blocks requests, `FRONTEND_ORIGIN` on Render must match the site origin exactly (`https://acdelgato.infinityfreeapp.com`, no path).
 4. Visitors get a **7-day** sandbox and a **50-transaction** cap per account. Optional launch-notify email is mailed to you and **not stored**.
+5. **`Failed to fetch` / could not fetch:** open `https://finara-demo.onrender.com/api/health`. If the response is `404` with `x-render-routing: no-server`, the Web Service was never created — do step 1. A sleeping free instance wakes in 30–60s; a working API returns `{"ok":true}`.
 
 ## 4. Local work
 
