@@ -6,7 +6,7 @@ const express = require('express');
 const router = express.Router();
 const { assertNotifyPayload, sendLaunchNotify } = require('../services/notify');
 
-router.post('/', async (req, res) => {
+async function postNotifyLaunch(req, res) {
   try {
     const notifyEmail = assertNotifyPayload({
       email: req.body?.email,
@@ -30,6 +30,9 @@ router.post('/', async (req, res) => {
   } catch (e) {
     res.status(400).json({ error: e.message });
   }
-});
+}
+
+router.post('/', postNotifyLaunch);
 
 module.exports = router;
+module.exports.postNotifyLaunch = postNotifyLaunch;

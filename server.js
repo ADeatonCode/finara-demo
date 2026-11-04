@@ -9,7 +9,7 @@ const path    = require('path');
 const { loadEnv } = require('./services/env');
 loadEnv();
 
-const { requireAuth, requireDataPermission } = require('./auth');
+const { requireAuth, requireDataPermission, getUserFromRequest } = require('./auth');
 require('./database');
 const { startRetentionSweep, RETENTION_NOTICE } = require('./services/retention');
 const { logNotifyConfig } = require('./services/notify');
@@ -77,11 +77,19 @@ app.use(express.static(path.join(__dirname, 'public'), {
 }));
 
 app.get('/api/health', (req, res) => {
-  res.json({ ok: true, service: 'finara-demo' });
+  res.json({ ok: true, service: 'finara-demo', notify_launch: true });
 });
 
+function attachOptionalUser(req, _res, next) {
+  req.user = getUserFromRequest(req) || null;
+  next();
+}
+
 app.use('/api/auth', require('./routes/auth'));
-app.use('/api/notify-launch', requireAuth, require('./routes/notify'));
+const notifyLaunch = require('./routes/notify');
+// Banner opt-in from InfinityFree. Public POST — visitor email is not stored.
+app.post('/api/notify-launch', attachOptionalUser, notifyLaunch.postNotifyLaunch);
+app.use('/api/notify-launch', attachOptionalUser, notifyLaunch);
 app.use('/api/accounts', requireAuth, requireDataPermission, require('./routes/accounts'));
 app.use('/api/account-types', requireAuth, requireDataPermission, require('./routes/accountTypes'));
 app.use('/api/transactions', requireAuth, requireDataPermission, require('./routes/transactions'));
