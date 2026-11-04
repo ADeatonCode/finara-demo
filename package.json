@@ -1,0 +1,17 @@
+{
+  "name": "finara-demo",
+  "version": "1.0.0",
+  "description": "Finara Demo — portfolio sandbox with fake banks and a fake Plaid-style sync. No real money, no API keys.",
+  "main": "server.js",
+  "author": "Finara",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "start": "node --experimental-sqlite server.js",
+    "dev": "node --experimental-sqlite --watch server.js"
+  },
+  "dependencies": {
+    "express": "^4.22.2"
+  }
+}
