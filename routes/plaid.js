@@ -1,6 +1,6 @@
 /**
  * FINARA DEMO — fake bank connection routes.
- * Same Connect / Sync / Disconnect UX as Finara, without Plaid.
+ * Same Connect / Sync / Disconnect UX as Finara, without a real SimpleFIN token.
  */
 const express = require('express');
 const router = express.Router();

@@ -1,7 +1,7 @@
 /**
  * FINARA DEMO — services/plaidSync.js
  *
- * Fake Plaid-style Connect / Sync. Never calls Plaid, never needs API keys.
+ * Fake SimpleFIN-style Connect / Sync. Never calls SimpleFIN or Plaid, never needs a token.
  * Scripted merchants from Chime, Ascend FCU, and Demo National.
  */
 const db = require('../database');

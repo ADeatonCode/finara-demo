@@ -8,7 +8,7 @@ This is a **demo of the real product only. Data is kept for 7 days.**
 - Optional email on sign-up if they want to know when they can buy Finara for their own computer. Email is not required, and it is **not stored** on this server.
 - Add real-looking accounts (your own bank names, balances, transactions) the same way as Finara.
 - Optional sample household (fake banks and merchants) if you want a filled-in demo.
-- Fake Plaid-style **Connect / Sync** — looks like bank linking, never calls Plaid, never needs API keys.
+- Fake **SimpleFIN-style Connect / Sync** — looks like mapping a bank to a Finara tab, never calls SimpleFIN or Plaid, never needs a token.
 - **Node 22+** (built-in SQLite). Default port **3001** so a live Finara app on 3000 can keep running.
 
 ## Run locally
@@ -38,7 +38,7 @@ See **`INFINITYFREE.md`** for the click-path (New Web Service → GitHub → `AD
 2. Build: `npm install`
 3. Start: `npm start` (`node --experimental-sqlite server.js`)
 4. Render sets `PORT`. The server binds `0.0.0.0`.
-5. Set `FRONTEND_ORIGIN` to your InfinityFree site origin (no path). Do **not** add Plaid secrets or `MONGO_URI`.
+5. Set `FRONTEND_ORIGIN` to your InfinityFree site origin (no path). Do **not** add SimpleFIN tokens, Plaid secrets, or `MONGO_URI`.
 6. Optional: set `SMTP_*` and `NOTIFY_EMAIL` (see below) if you want opt-in notices mailed to you.
 
 SQLite (`finara-demo.db`) is created on first boot, is gitignored, and is **ephemeral** on Render — demo data resets on deploy. That is OK for a 7-day sandbox.
@@ -71,7 +71,9 @@ If you already clicked **Load sample household** before the Harbor Card credit-c
 
 On an account: **Edit → Bank Connection**
 
-1. **Connect Bank** opens a fake picker: Chime, Ascend FCU, Demo National — not Plaid Link.
+This is a **demo of SimpleFIN-style sync** (you connect banks through SimpleFIN; in the full app you pay SimpleFIN ~$15/year, not Finara). The demo never asks for a real SimpleFIN token.
+
+1. **Connect Bank** opens a fake picker: Chime, Ascend FCU, Demo National — a taste of mapping a bank to a Finara tab. No real login.
 2. **Sync now** waits briefly, then inserts 3–8 new posted rows from that bank’s canned list. Dates are recent. Credits are positive, debits are negative. Harbor Card syncs purchases (debits that increase what you owe) plus an optional payment toward zero.
 3. Repeat Sync only uses leftover canned ids (no flood).
 4. **Disconnect** drops the fake link and **keeps** existing rows.

@@ -2171,7 +2171,7 @@
 ═══════════════════════════════════════════════════════════ -->
 <main class="main">
   <div class="demo-app-banner" id="demo-app-banner">
-    <span>This is a demo of the real product only. Data is kept for 7 days.</span>
+    <span>This is a demo of the real product only. Data is kept for 7 days. Full Finara can sync via SimpleFIN ($15/year, you pay them).</span>
     <span class="demo-banner-offer" id="demo-banner-offer">
       <button type="button" class="demo-banner-link" id="demo-banner-notify-toggle" aria-expanded="false" aria-controls="demo-banner-notify-form" onclick="toggleBannerNotify()">Email me when I can buy Finara for my own computer.</button>
       <form id="demo-banner-notify-form" class="demo-banner-notify-form" hidden onsubmit="submitBannerNotify(event)">
@@ -3028,7 +3028,7 @@
 
       <div id="acct-plaid-section">
         <div class="form-section-label">Bank Connection</div>
-        <p class="plaid-help">Demo sync looks like Plaid Connect / Sync, but never talks to a real bank.</p>
+        <p class="plaid-help">This is a demo of SimpleFIN-style sync. In the full app you connect banks through SimpleFIN (~$15/year, you pay them — not Finara). This demo never asks for a SimpleFIN token.</p>
         <p class="plaid-help" id="acct-plaid-sandbox" hidden>Demo banks: Chime, Ascend FCU, Demo National.</p>
         <p class="plaid-help" id="acct-plaid-keys-msg" hidden></p>
         <p class="plaid-help" id="acct-plaid-save-first" hidden>Save this account first, then connect a bank.</p>
@@ -3208,7 +3208,7 @@
       <button class="modal-close" onclick="closeModal('modal-demo-bank')">×</button>
     </div>
     <div class="modal-body">
-      <p class="plaid-help">This is a fake institution picker for the demo. No Plaid Link, no real login.</p>
+      <p class="plaid-help">Pick a demo bank to map onto this Finara tab — the same idea as choosing a SimpleFIN account in the full app. No real login and no SimpleFIN token.</p>
       <div class="demo-bank-list" id="demo-bank-list"></div>
     </div>
     <div class="modal-footer">
@@ -10410,7 +10410,7 @@
   }
 
   /* ══════════════════════════════════════════════════════
-     PLAID — connect a bank on each Finara account
+     FAKE SIMPLEFIN-STYLE SYNC — demo only, no real token
   ══════════════════════════════════════════════════════ */
   const PLAID_AUTO_SYNC_MS = 15 * 60 * 1000;
   const PLAID_MIN_SYNC_GAP_MS = 45 * 1000;
