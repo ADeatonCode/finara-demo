@@ -1,5 +1,10 @@
 /**
- * FINARA DEMO — sample household, start-over, retention copy.
+ * FINARA DEMO — routes/demo.js
+ *
+ * What this file does:
+ * - Shares the 7-day demo notice and purchase-cap messages with the browser.
+ * - Lets a signed-in visitor load a fake sample household.
+ * - Lets them start over (wipe their demo data back to empty or sample).
  */
 const express = require('express');
 const router = express.Router();
